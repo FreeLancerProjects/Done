@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "12108070610",
+    "firebase_url": "https://doneapp-f3d35.firebaseio.com",
+    "project_id": "doneapp-f3d35",
+    "storage_bucket": "doneapp-f3d35.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12108070610:android:1e7295683396a5a029b70b",
+        "android_client_info": {
+          "package_name": "com.technology.circles.apps.done"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12108070610-nhc02eserheidjp3p7g57bc8og0720n6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.technology.circles.apps.done",
+            "certificate_hash": "6616577a7e310a6aae058246a826c73910eff6d4"
+          }
+        },
+        {
+          "client_id": "12108070610-lpcuf0h7fqkg0h6istu2kcosn3p5mqlf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0_XKN4qEaV6M2jrCWTIzp0n4rGct0V5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12108070610-lpcuf0h7fqkg0h6istu2kcosn3p5mqlf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

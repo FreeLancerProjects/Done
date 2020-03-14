@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تم</string>
+    <string name="home">الرئيسية</string>
+    <string name="notifications">إشعار</string>
+    <string name="more">المزيد</string>
+
+    <string name="terms_and_conditions">الشروط والاحكام</string>
+    <string name="about_app">عن التطبيق</string>
+    <string name="contact_us">اتصل بنا</string>
+
+
+
+    <string name="back">رجوع</string>
+    <string name="failed">فشل حاول مرة اخرى لاحقا</string>
+    <string name="something">تحقق من الاتصال بالانترنت</string>
+
+    <string name="language_settings">إعدادات اللغة</string>
+    <string name="sar">ر.س</string>
+    <string name="no_details">لا توجد تفاصيل</string>
+    <string name="cancel">إلغاء</string>
+    <string name="suc">تم بنجاح</string>
+
+    <string name="share">مشاركة</string>
+    <string name="edit">تعديل</string>
+    <string name="price">السعر</string>
+    <string name="delete">حذف</string>
+
+    <string name="change_language">تغير اللغة</string>
+
+    <string name="detials">التفاصيل :</string>
+
+    <string name="send">إرسال</string>
+    <string name="ok">حسنا!</string>
+    <string name="no_data_to_show">لاتوجد عناصر لعرضها</string>
+
+    <string name="search2">بحث</string>
+    <string name="phone">رقم الجوال</string>
+    <string name="address">العنوان</string>
+    <string name="email">البريد الالكتروني</string>
+    <string name="send_a_message">إرسل رسالتك</string>
+    <string name="name">الإسم</string>
+    <string name="subject">الموضوع</string>
+    <string name="message">الرسالة</string>
+    <string name="wait">إنتظر قليلا...</string>
+    <string name="profile">حسابي</string>
+    <string name="please_sign_in_or_sign_up">قم بتسجيل الدخول او انشاء حساب جديد</string>
+    <string name="password">كلمة المرور</string>
+    <string name="log_in">دخول</string>
+    <string name="new_account">حساب جديد</string>
+    <string name="skip">تخطي</string>
+    <string name="service_provider">مقدم الخدمة</string>
+    <string name="code">الكود</string>
+    <string name="already_have_an_account">لدي حساب بالفعل !</string>
+    <string name="field_required">الحقل مطلوب</string>
+    <string name="pass_short">كلمة المرور قصيرة جدا</string>
+    <string name="inv_email">بريد الكتروني غير صحيح</string>
+    <string name="logout">خروج</string>
+    <string name="no_image">لا توجد صورة</string>
+    <string name="inv_phone">رقم جوال غير صحيح</string>
+    <string name="perm_img_denied">الوصول الى الصور غير مسموح</string>
+    <string name="ch_img">إختر الصورة</string>
+    <string name="update_profile">تعديل الملف الشخصي</string>
+    <string name="send_code">إرسال الكود</string>
+    <string name="confirmation_code">كود التحقق</string>
+    <string name="confirm">تأكيد</string>
+    <string name="resend">لم أستلم كود التفعيل</string>
+    <string name="inv_sms_code">الكود غير صحيح</string>
+    <string name="pub">عام</string>
+    <string name="pers">خاصة</string>
+    <string name="add_alarm">إضافة تنبية</string>
+    <string name="time">الوقت :</string>
+    <string name="change">تغيير</string>
+    <string name="date">التاريخ :</string>
+    <string name="select">إختر</string>
+    <string name="saved">تم الحفظ</string>
+    <string name="save_for_me">حفظ</string>
+    <string name="save_and_share"><![CDATA[حفظ & مشاركة]]></string>
+    <string name="share_for_friends">مشاركة الاصدقاء</string>
+    <string name="share_on_social_media">مشاركة على السوشيال ميديا</string>
+    <string name="contacts">الاصدقاء</string>
+    <string name="cnt_access_cont">لايمكن الوصول لجهات الاتصال الخاصة بك</string>
+    <string name="alert_type">نوع التنبية</string>
+    <string name="alert">تنبية</string>
+    <string name="voice">إتصال داخلي</string>
+    <string name="call">إتصال خارجي</string>
+    <string name="rec_sound">قم بتسجيل صوتي</string>
+    <string name="ch_time">إختر الوقت</string>
+    <string name="ch_date">إختر التاريخ</string>
+    <string name="ch_alert_type">إختر نوع التنبية</string>
+
+</resources>

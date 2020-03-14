@@ -1,0 +1,90 @@
+<resources>
+    <string name="app_name">Done</string>
+    <string name="home">Home</string>
+    <string name="notifications">Notifications</string>
+    <string name="more">More</string>
+    <string name="terms_and_conditions">Terms of use</string>
+    <string name="about_app">About</string>
+    <string name="contact_us">Contact Us</string>
+
+
+    <string name="back">Back</string>
+    <string name="failed">Failed</string>
+    <string name="something">Check internet connection</string>
+
+    <string name="language_settings">Language Settings</string>
+    <string name="sar">SAR</string>
+    <string name="no_details">No details</string>
+    <string name="cancel">Cancel</string>
+    <string name="suc">Success !</string>
+
+
+    <string name="share">share</string>
+    <string name="edit">Edit</string>
+    <string name="price">Price</string>
+    <string name="delete">Delete</string>
+    <string name="change_language">Change language</string>
+    <string name="detials">Details :</string>
+
+
+    <string name="send">Send</string>
+    <string name="ok">ok</string>
+    <string name="no_data_to_show">No data to show</string>
+
+    <string name="search2">Search</string>
+    <string name="phone">Phone number</string>
+    <string name="address">Address</string>
+    <string name="email">Email</string>
+    <string name="send_a_message">Send a message</string>
+    <string name="name">Name</string>
+    <string name="subject">Subject</string>
+    <string name="message">Message</string>
+    <string name="wait">Wait...</string>
+    <string name="profile">Profile</string>
+    <string name="please_sign_in_or_sign_up">Please sign In or Sign Up</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log In</string>
+    <string name="new_account">New Account</string>
+    <string name="skip">Skip</string>
+    <string name="service_provider">Service Provider</string>
+    <string name="code">Code</string>
+    <string name="already_have_an_account">Already have an account !</string>
+    <string name="field_required">Field Required</string>
+    <string name="pass_short">Password too short</string>
+    <string name="inv_email">Invalid email</string>
+    <string name="perm_img_denied">Permission denied</string>
+    <string name="ch_img">Choose Image</string>
+    <string name="update_profile">Update Profile</string>
+    <string name="no_image">No Image</string>
+    <string name="inv_phone">Invalid phone</string>
+    <string name="logout">Logout</string>
+    <string name="send_code">send code</string>
+    <string name="confirmation_code">Confirmation Code</string>
+    <string name="confirm">confirm</string>
+    <string name="resend">Resend</string>
+    <string name="inv_sms_code">Invalid sms code</string>
+    <string name="pub">Public</string>
+    <string name="pers">Personal</string>
+    <string name="add_alarm">Add Alarm</string>
+    <string name="time">Time :</string>
+    <string name="change">Change</string>
+    <string name="date">Date :</string>
+    <string name="select">Select</string>
+    <string name="saved">Saved</string>
+    <string name="save_for_me">Save For Me</string>
+    <string name="save_and_share"><![CDATA[Save & Share]]></string>
+    <string name="share_for_friends">Share For Friends</string>
+    <string name="share_on_social_media">Share On Social Media</string>
+    <string name="contacts">Contacts</string>
+    <string name="cnt_access_cont">Cannot access contacts</string>
+    <string name="alert_type">Alert Type</string>
+    <string name="alert">Alert</string>
+    <string name="voice">Inner Call</string>
+    <string name="call">Out Call</string>
+    <string name="rec_sound">Record a sound please</string>
+    <string name="ch_time">Choose Time</string>
+    <string name="ch_date">Choose Date</string>
+    <string name="ch_alert_type">Choose Alert Type</string>
+
+
+</resources>

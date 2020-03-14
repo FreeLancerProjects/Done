@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bottom_sheet"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="0dp"
+    android:id="@+id/root"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:id="@+id/btnFriend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:background="@drawable/rounded_white"
+            >
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_group"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:tint="@color/second"
+                android:padding="5dp"
+                android:clickable="false"
+                android:longClickable="false"
+
+
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/second"
+                android:textSize="17sp"
+                android:text="@string/share_for_friends"
+                android:clickable="false"
+                android:longClickable="false"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnSocial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:background="@drawable/rounded"
+            android:layout_marginTop="20dp"
+            >
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_share"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:tint="@color/white"
+                android:padding="5dp"
+                android:clickable="false"
+                android:longClickable="false"
+
+
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="17sp"
+                android:text="@string/share_on_social_media"
+                android:clickable="false"
+                android:longClickable="false"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

@@ -38,6 +38,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Listeners.
     private Runnable runnable;
     private AlertModel alertModel;
     private File file;
+    private String path;
 
 
 
@@ -142,7 +143,16 @@ public class NoteDetailsActivity extends AppCompatActivity implements Listeners.
 
         File file = null;
         try {
-            String path = Environment.getExternalStorageDirectory().getAbsoluteFile() +"/AUD"+alertModel.getId()+".mp3";
+
+            File folder_done = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/Done_Audio");
+
+            if (!folder_done.exists())
+            {
+                folder_done.mkdir();
+            }
+
+            path = folder_done.getAbsolutePath() + "/" + alertModel.getAudio_name();
+
             file = new File(path);
             FileOutputStream outputStream = new FileOutputStream(file);
             outputStream.write(sound);
@@ -235,7 +245,17 @@ public class NoteDetailsActivity extends AppCompatActivity implements Listeners.
     @Override
     public void onBackPressed() {
 
+        deleteFile();
         back();
+    }
+
+    private void deleteFile() {
+
+        if (path!=null&&!path.isEmpty())
+        {
+            File file = new File(path);
+            file.delete();
+        }
     }
 
     @Override
@@ -254,4 +274,7 @@ public class NoteDetailsActivity extends AppCompatActivity implements Listeners.
             runnable = null;
         }
     }
+
+
+
 }

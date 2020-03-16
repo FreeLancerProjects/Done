@@ -85,6 +85,9 @@
     <string name="ch_time">Choose Time</string>
     <string name="ch_date">Choose Date</string>
     <string name="ch_alert_type">Choose Alert Type</string>
+    <string name="done_alert">Done Alert</string>
+    <string name="inner_call">Inner Call</string>
+    <string name="reply">LISTEN</string>
 
 
 </resources>

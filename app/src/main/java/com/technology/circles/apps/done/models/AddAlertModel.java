@@ -25,6 +25,7 @@ public class AddAlertModel extends BaseObservable implements Serializable {
     private boolean isOuterCall;
     private String details;
     private String sound_path;
+    private String audio_name;
 
     public ObservableField<String> error_details = new ObservableField<>();
 
@@ -179,5 +180,13 @@ public class AddAlertModel extends BaseObservable implements Serializable {
 
     public void setSound_path(String sound_path) {
         this.sound_path = sound_path;
+    }
+
+    public String getAudio_name() {
+        return audio_name;
+    }
+
+    public void setAudio_name(String audio_name) {
+        this.audio_name = audio_name;
     }
 }

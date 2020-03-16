@@ -22,6 +22,10 @@ public class AlertModel implements Serializable {
     private int is_inner_call;
     private int is_outer_cal;
     private int is_sound;
+    private String alert_time;
+    private String audio_name;
+    private int alert_state;
+
 
     private String details;
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
@@ -51,6 +55,30 @@ public class AlertModel implements Serializable {
 
     public long getDate() {
         return date;
+    }
+
+    public String getAudio_name() {
+        return audio_name;
+    }
+
+    public void setAudio_name(String audio_name) {
+        this.audio_name = audio_name;
+    }
+
+    public int getAlert_state() {
+        return alert_state;
+    }
+
+    public void setAlert_state(int alert_state) {
+        this.alert_state = alert_state;
+    }
+
+    public String getAlert_time() {
+        return alert_time;
+    }
+
+    public void setAlert_time(String alert_time) {
+        this.alert_time = alert_time;
     }
 
     public int getAlert_type() {

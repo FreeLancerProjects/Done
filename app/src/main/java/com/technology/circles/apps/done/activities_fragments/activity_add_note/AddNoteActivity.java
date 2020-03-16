@@ -23,17 +23,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.technology.circles.apps.done.R;
 import com.technology.circles.apps.done.activities_fragments.activity_contact.ContactsActivity;
+import com.technology.circles.apps.done.activities_fragments.broadcast.AlertManager;
 import com.technology.circles.apps.done.databinding.ActivityAddNoteBinding;
 import com.technology.circles.apps.done.interfaces.Listeners;
 import com.technology.circles.apps.done.language.LanguageHelper;
 import com.technology.circles.apps.done.local_database.AlertModel;
-import com.technology.circles.apps.done.local_database.ViewModel;
+import com.technology.circles.apps.done.local_database.DataBaseActions;
+import com.technology.circles.apps.done.local_database.DatabaseInteraction;
 import com.technology.circles.apps.done.models.AddAlertModel;
 import com.technology.circles.apps.done.share.Common;
 import com.technology.circles.apps.done.tags.Tags;
@@ -47,12 +48,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.paperdb.Paper;
 
-public class AddNoteActivity extends AppCompatActivity implements Listeners.BackListener , DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class AddNoteActivity extends AppCompatActivity implements Listeners.BackListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener , DatabaseInteraction {
 
     private ActivityAddNoteBinding binding;
     private String lang;
@@ -70,13 +72,12 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     private Runnable runnable;
     private View root;
     private BottomSheetBehavior behavior;
-    private LinearLayout btnSocial,btnFriend;
+    private LinearLayout btnSocial, btnFriend;
     private boolean isAlert = true;
     private boolean isInnerCall = false;
     private boolean isOutCall = false;
     private AddAlertModel model;
-    private ViewModel viewModel;
-
+    private DataBaseActions dataBaseActions;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -97,9 +98,10 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
         model = new AddAlertModel();
-        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        dataBaseActions = new DataBaseActions(this);
+        dataBaseActions.setInteraction(this);
         Paper.init(this);
-        lang = Paper.book().read("lang","ar");
+        lang = Paper.book().read("lang", "ar");
         binding.setBackListener(this);
         binding.setLang(lang);
         binding.setModel(model);
@@ -124,8 +126,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         binding.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (mediaPlayer!=null&&b)
-                {
+                if (mediaPlayer != null && b) {
 
                     mediaPlayer.seekTo(i);
 
@@ -145,29 +146,21 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         });
 
 
-
         binding.imageMic.setOnTouchListener((view, motionEvent) -> {
 
-            if (motionEvent.getAction()==MotionEvent.ACTION_DOWN)
-            {
-                if (isPermissionGranted)
-                {
-                    if (recorder!=null)
-                    {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                if (isPermissionGranted) {
+                    if (recorder != null) {
                         recorder.release();
                         recorder = null;
 
                     }
                     initRecorder();
-                }else
-                    {
-                        Toast.makeText(this, "Cannot access mic", Toast.LENGTH_SHORT).show();
-                    }
-            }
-            else if (motionEvent.getAction()==MotionEvent.ACTION_UP)
-            {
-                if (isPermissionGranted)
-                {
+                } else {
+                    Toast.makeText(this, "Cannot access mic", Toast.LENGTH_SHORT).show();
+                }
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                if (isPermissionGranted) {
 
                     try {
                         recorder.stop();
@@ -176,19 +169,17 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                         mediaPlayer = null;
                         initAudio();
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         binding.imageWave.setVisibility(View.GONE);
                     }
 
 
-                }else
-                {
+                } else {
                     Toast.makeText(this, "Cannot access mic", Toast.LENGTH_SHORT).show();
                 }
 
 
             }
-
 
 
             return true;
@@ -197,38 +188,37 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         binding.changeTime.setOnClickListener(view -> {
 
             try {
-                timePickerDialog.show(getFragmentManager(),"");
-            }catch (Exception e){}
+                timePickerDialog.show(getFragmentManager(), "");
+            } catch (Exception e) {
+            }
 
         });
         binding.changeDate.setOnClickListener(view -> {
 
             try {
-                datePickerDialog.show(getFragmentManager(),"");
-            }catch (Exception e){}
+                datePickerDialog.show(getFragmentManager(), "");
+            } catch (Exception e) {
+            }
 
         });
         binding.imagePlay.setOnClickListener(view -> {
 
-            if (mediaPlayer!=null&&mediaPlayer.isPlaying())
-            {
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 binding.recordDuration.setText(getDuration(mediaPlayer.getCurrentPosition()));
                 mediaPlayer.pause();
                 binding.imagePlay.setImageResource(R.drawable.ic_play);
 
-            }else
-                {
+            } else {
 
-                    if (mediaPlayer!=null)
-                    {
-                        binding.imagePlay.setImageResource(R.drawable.ic_pause);
+                if (mediaPlayer != null) {
+                    binding.imagePlay.setImageResource(R.drawable.ic_pause);
 
-                        mediaPlayer.start();
-                        updateProgress();
+                    mediaPlayer.start();
+                    updateProgress();
 
 
-                    }
                 }
+            }
 
         });
         binding.imageDelete.setOnClickListener(view -> {
@@ -259,7 +249,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         btnSocial.setOnClickListener(view -> {
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_TEXT,"");
+            intent.putExtra(Intent.EXTRA_TEXT, "");
             intent.setType("text/plain");
             startActivity(intent);
         });
@@ -271,33 +261,30 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                     .postDelayed(() -> {
                         Intent intent = new Intent(this, ContactsActivity.class);
                         startActivity(intent);
-                    },500);
+                    }, 500);
 
         });
 
         binding.llAlert.setOnClickListener(view -> {
 
-            if (isAlert)
-            {
+            if (isAlert) {
                 isAlert = false;
                 binding.llAlert.setBackgroundResource(R.drawable.rounded_gray);
-                binding.iconAlert.setColorFilter(ContextCompat.getColor(this,R.color.black));
-                binding.tvAlert.setTextColor(ContextCompat.getColor(this,R.color.black));
+                binding.iconAlert.setColorFilter(ContextCompat.getColor(this, R.color.black));
+                binding.tvAlert.setTextColor(ContextCompat.getColor(this, R.color.black));
                 model.setAlert(false);
 
-            }else
-                {
-                    isAlert = true;
-                    binding.llAlert.setBackgroundResource(R.drawable.rounded);
-                    binding.iconAlert.setColorFilter(ContextCompat.getColor(this,R.color.white));
-                    binding.tvAlert.setTextColor(ContextCompat.getColor(this,R.color.white));
-                    model.setAlert(true);
+            } else {
+                isAlert = true;
+                binding.llAlert.setBackgroundResource(R.drawable.rounded);
+                binding.iconAlert.setColorFilter(ContextCompat.getColor(this, R.color.white));
+                binding.tvAlert.setTextColor(ContextCompat.getColor(this, R.color.white));
+                model.setAlert(true);
 
-                }
+            }
 
 
             binding.setModel(model);
-
 
 
         });
@@ -305,70 +292,60 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         binding.llVoice.setOnClickListener(view -> {
 
 
-            if (isInnerCall)
-            {
+            if (isInnerCall) {
                 isInnerCall = false;
                 binding.llVoice.setBackgroundResource(R.drawable.rounded_gray);
-                binding.iconVoice.setColorFilter(ContextCompat.getColor(this,R.color.black));
-                binding.tvVoice.setTextColor(ContextCompat.getColor(this,R.color.black));
+                binding.iconVoice.setColorFilter(ContextCompat.getColor(this, R.color.black));
+                binding.tvVoice.setTextColor(ContextCompat.getColor(this, R.color.black));
                 model.setInnerCall(false);
 
-            }else
-                {
-                    isInnerCall = true;
-                    binding.llVoice.setBackgroundResource(R.drawable.rounded);
-                    binding.iconVoice.setColorFilter(ContextCompat.getColor(this,R.color.white));
-                    binding.tvVoice.setTextColor(ContextCompat.getColor(this,R.color.white));
+            } else {
+                isInnerCall = true;
+                binding.llVoice.setBackgroundResource(R.drawable.rounded);
+                binding.iconVoice.setColorFilter(ContextCompat.getColor(this, R.color.white));
+                binding.tvVoice.setTextColor(ContextCompat.getColor(this, R.color.white));
 
-                    model.setInnerCall(true);
-                }
-
+                model.setInnerCall(true);
+            }
 
 
             binding.setModel(model);
-
 
 
         });
 
         binding.llCall.setOnClickListener(view -> {
 
-            if (isOutCall)
-            {
+            if (isOutCall) {
                 isOutCall = false;
                 binding.llCall.setBackgroundResource(R.drawable.rounded_gray);
-                binding.iconCall.setColorFilter(ContextCompat.getColor(this,R.color.black));
-                binding.tvCall.setTextColor(ContextCompat.getColor(this,R.color.black));
+                binding.iconCall.setColorFilter(ContextCompat.getColor(this, R.color.black));
+                binding.tvCall.setTextColor(ContextCompat.getColor(this, R.color.black));
                 model.setOuterCall(false);
 
-            }else
-                {
+            } else {
 
-                    isOutCall = true;
+                isOutCall = true;
 
-                    binding.llCall.setBackgroundResource(R.drawable.rounded);
-                    binding.iconCall.setColorFilter(ContextCompat.getColor(this,R.color.white));
-                    binding.tvCall.setTextColor(ContextCompat.getColor(this,R.color.white));
+                binding.llCall.setBackgroundResource(R.drawable.rounded);
+                binding.iconCall.setColorFilter(ContextCompat.getColor(this, R.color.white));
+                binding.tvCall.setTextColor(ContextCompat.getColor(this, R.color.white));
 
-                    model.setOuterCall(true);
+                model.setOuterCall(true);
 
 
-                }
+            }
 
 
             binding.setModel(model);
-
-
-
 
 
         });
 
         binding.btnSave.setOnClickListener(view -> {
 
-            if (model.isDataValid(this))
-            {
-                Common.CloseKeyBoard(this,binding.edtDetails);
+            if (model.isDataValid(this)) {
+                Common.CloseKeyBoard(this, binding.edtDetails);
 
                 save();
             }
@@ -379,36 +356,30 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     private void save() {
 
         int alert = 0;
-        int in_call =0;
+        int in_call = 0;
         int out_call = 0;
-        int is_sound =0;
+        int is_sound = 0;
 
-        if (isInnerCall)
-        {
+        if (isInnerCall) {
             in_call = 1;
         }
 
-        if (isOutCall)
-        {
+        if (isOutCall) {
             out_call = 1;
 
         }
 
-        if (isAlert)
-        {
+        if (isAlert) {
             alert = 1;
         }
 
 
+        AlertModel alertModel = new AlertModel(model.getTime(), model.getDate(), model.getAlert_type(), alert, in_call, out_call, model.getDetails());
 
-
-        AlertModel alertModel = new AlertModel(model.getTime(),model.getDate(),model.getAlert_type(),alert,in_call,out_call,model.getDetails());
-
-        if (!model.getSound_path().isEmpty())
-        {
+        if (!model.getSound_path().isEmpty()) {
             is_sound = 1;
             File file = new File(model.getSound_path());
-            byte [] sound = new byte[(int) file.length()];
+            byte[] sound = new byte[(int) file.length()];
 
             try {
                 FileInputStream inputStream = new FileInputStream(file);
@@ -425,26 +396,67 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         }
 
         alertModel.setIs_sound(is_sound);
-        viewModel.insert(alertModel);
+
+        Calendar calendarTime = Calendar.getInstance();
+        Calendar calendarDate = Calendar.getInstance();
+        calendarTime.setTimeInMillis(alertModel.getTime());
+        calendarDate.setTimeInMillis(alertModel.getDate());
+
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.clear();
+        calendar.set(Calendar.DAY_OF_MONTH,calendarDate.get(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.MONTH,calendarDate.get(Calendar.MONTH));
+        calendar.set(Calendar.YEAR,calendarDate.get(Calendar.YEAR));
+        calendar.set(Calendar.HOUR_OF_DAY,calendarTime.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE,calendarTime.get(Calendar.MINUTE));
+
+
+        AlertManager manager = new AlertManager(this);
+        manager.startAlarm(calendar.getTimeInMillis());
+        String time = new SimpleDateFormat("dd/MMM/yyy hh:mm aa",Locale.ENGLISH).format(new Date(calendar.getTimeInMillis()));
+        alertModel.setAudio_name(model.getAudio_name());
+        alertModel.setAlert_time(time);
+        dataBaseActions.insert(alertModel);
+
+
+        if (path!=null&&!path.isEmpty())
+        {
+            deleteFile();
+        }
+
         setResult(RESULT_OK);
         finish();
 
     }
 
 
-    private void initRecorder()
-    {
+    private void initRecorder() {
 
 
         binding.cardView.setVisibility(View.GONE);
         isPermissionGranted = true;
-        audioName = "AUD"+System.currentTimeMillis()+".mp3";
+        audioName = "AUD" + System.currentTimeMillis() + ".mp3";
         binding.tvName.setText(audioName);
 
-        path = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/"+audioName;
+        File folder_done = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/Done_Audio");
+
+        if (!folder_done.exists())
+        {
+            folder_done.mkdir();
+        }
+
+        path = folder_done.getAbsolutePath() + "/" + audioName;
+
+
+
+
 
         recorder = new MediaRecorder();
         model.setSound_path(path);
+        model.setAudio_name(audioName);
         binding.setModel(model);
 
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -460,35 +472,31 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("Faild","Failed");
+            Log.e("Faild", "Failed");
             binding.imageWave.setVisibility(View.GONE);
             binding.cardView.setVisibility(View.GONE);
-            File file = new File(path);
-            file.delete();
+            deleteFile();
 
-            if (mediaPlayer!=null)
-            {
+            if (mediaPlayer != null) {
                 mediaPlayer.release();
                 mediaPlayer = null;
             }
 
-            if (handler!=null&&runnable!=null)
-            {
+            if (handler != null && runnable != null) {
                 handler.removeCallbacks(runnable);
             }
         }
 
     }
 
-    private void initAudio()
-    {
+    private void initAudio() {
         try {
 
 
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource(path);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setVolume(100.0f,100.0f);
+            mediaPlayer.setVolume(100.0f, 100.0f);
             mediaPlayer.setLooping(false);
             mediaPlayer.prepare();
             binding.recordDuration.setText(getDuration(mediaPlayer.getDuration()));
@@ -509,14 +517,13 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
             });
 
         } catch (IOException e) {
-            Log.e("eeeex",e.getMessage());
+            Log.e("eeeex", e.getMessage());
             File file = new File(path);
             file.delete();
             binding.imageWave.setVisibility(View.GONE);
             mediaPlayer.release();
             mediaPlayer = null;
-            if (handler!=null&&runnable!=null)
-            {
+            if (handler != null && runnable != null) {
                 handler.removeCallbacks(runnable);
             }
             binding.cardView.setVisibility(View.GONE);
@@ -524,39 +531,33 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         }
     }
 
-    private void updateProgress()
-    {
+    private void updateProgress() {
         binding.seekBar.setProgress(mediaPlayer.getCurrentPosition());
         binding.recordDuration.setText(getDuration(mediaPlayer.getCurrentPosition()));
         handler = new Handler();
-        runnable  = this::updateProgress;
-        handler.postDelayed(runnable,1000);
-
+        runnable = this::updateProgress;
+        handler.postDelayed(runnable, 1000);
 
 
     }
 
     private void checkWritePermission() {
 
-        if (ContextCompat.checkSelfPermission(this,write_perm)!= PackageManager.PERMISSION_GRANTED&&ContextCompat.checkSelfPermission(this,audio_perm)!= PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this,new String[]{write_perm,audio_perm},write_req);
+        if (ContextCompat.checkSelfPermission(this, write_perm) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, audio_perm) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{write_perm, audio_perm}, write_req);
 
-        }else
-            {
-                isPermissionGranted = true;
-            }
+        } else {
+            isPermissionGranted = true;
+        }
     }
 
 
-    private String getDuration(long duration)
-    {
+    private String getDuration(long duration) {
 
-        String total_duration="00:00";
+        String total_duration = "00:00";
 
-        if (mediaPlayer!=null)
-        {
-            total_duration = String.format(Locale.ENGLISH,"%02d:%02d",
+        if (mediaPlayer != null) {
+            total_duration = String.format(Locale.ENGLISH, "%02d:%02d",
                     TimeUnit.MILLISECONDS.toMinutes(duration),
                     TimeUnit.MILLISECONDS.toSeconds(duration) -
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))
@@ -570,9 +571,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     }
 
 
-
-    private void createDatePickerDialog()
-    {
+    private void createDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         datePickerDialog = DatePickerDialog.newInstance(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.dismissOnPause(true);
@@ -596,7 +595,8 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         timePickerDialog.setOkColor(ActivityCompat.getColor(this, R.color.colorPrimary));
         timePickerDialog.setOkText(getString(R.string.select));
         timePickerDialog.setCancelText(getString(R.string.cancel));
-        datePickerDialog.setLocale(Locale.ENGLISH);
+        timePickerDialog.setLocale(Locale.ENGLISH);
+        timePickerDialog.setMinTime(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
         timePickerDialog.setVersion(TimePickerDialog.Version.VERSION_2);
 
 
@@ -654,43 +654,66 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode==write_req&&grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED&&grantResults[1]==PackageManager.PERMISSION_GRANTED)
-        {
+        if (requestCode == write_req && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             isPermissionGranted = true;
         }
     }
 
     @Override
     public void back() {
-       finish();
+        finish();
     }
 
     @Override
     public void onBackPressed() {
 
-        if (behavior.getState()==BottomSheetBehavior.STATE_EXPANDED)
-        {
+        if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }else
-            {
-                back();
-            }
+        } else {
+            deleteFile();
+            back();
+        }
+    }
+
+    private void deleteFile() {
+
+        if (path!=null&&!path.isEmpty())
+        {
+            File file = new File(path);
+            file.delete();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer!=null)
-        {
+        if (mediaPlayer != null) {
             mediaPlayer.release();
-            mediaPlayer=null;
+            mediaPlayer = null;
 
         }
 
-        if (handler!=null&&runnable!=null)
-        {
+        if (handler != null && runnable != null) {
             handler.removeCallbacks(runnable);
             runnable = null;
         }
     }
+
+    @Override
+    public void insertedSuccess() {
+
+    }
+
+    @Override
+    public void displayData(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
+    public void displayByTime(AlertModel alertModel) {
+
+    }
+
+
+
 }

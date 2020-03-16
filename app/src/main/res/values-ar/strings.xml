@@ -88,5 +88,8 @@
     <string name="ch_time">إختر الوقت</string>
     <string name="ch_date">إختر التاريخ</string>
     <string name="ch_alert_type">إختر نوع التنبية</string>
+    <string name="done_alert">تنبية دن</string>
+    <string name="inner_call">إتصال داخلي</string>
+    <string name="reply">إستماع</string>
 
 </resources>

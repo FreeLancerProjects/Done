@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -16,8 +17,14 @@ public interface AlertDao {
     @Delete
     void delete(AlertModel alertModel);
 
+    @Update
+    void update(AlertModel alertModel);
+
 
     @Query("SELECT * FROM alerts_table WHERE alert_type =:type ORDER BY id DESC")
     List<AlertModel> getAllAlerts(int type);
+
+    @Query("SELECT * FROM alerts_table WHERE alert_time LIKE :time LIMIT 1")
+    AlertModel getAlertByTime(String time);
 
 }

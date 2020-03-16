@@ -414,12 +414,14 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         calendar.set(Calendar.MINUTE,calendarTime.get(Calendar.MINUTE));
 
 
-        AlertManager manager = new AlertManager(this);
-        manager.startAlarm(calendar.getTimeInMillis());
         String time = new SimpleDateFormat("dd/MMM/yyy hh:mm aa",Locale.ENGLISH).format(new Date(calendar.getTimeInMillis()));
         alertModel.setAudio_name(model.getAudio_name());
         alertModel.setAlert_time(time);
+        alertModel.setAlert_state(0);
         dataBaseActions.insert(alertModel);
+
+        AlertManager manager = new AlertManager(this);
+        manager.reStartAlarm();
 
 
         if (path!=null&&!path.isEmpty())
@@ -714,6 +716,10 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     }
 
+    @Override
+    public void displayAlertsByState(List<AlertModel> alertModelList) {
+
+    }
 
 
 }

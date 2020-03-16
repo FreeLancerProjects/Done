@@ -7,5 +7,7 @@ public interface DatabaseInteraction {
     void insertedSuccess();
     void displayData(List<AlertModel> alertModelList);
     void displayByTime(AlertModel alertModel);
+    void displayAlertsByState(List<AlertModel> alertModelList);
+
 
 }

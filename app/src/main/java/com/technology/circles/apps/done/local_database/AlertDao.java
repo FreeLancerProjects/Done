@@ -27,4 +27,6 @@ public interface AlertDao {
     @Query("SELECT * FROM alerts_table WHERE alert_time LIKE :time LIMIT 1")
     AlertModel getAlertByTime(String time);
 
+    @Query("SELECT * FROM alerts_table WHERE alert_state =:type ORDER BY id ASC")
+    List<AlertModel> getAllAlertsByState(int type);
 }

@@ -56,39 +56,48 @@ public class AlarmBroadcast extends BroadcastReceiver implements DatabaseInterac
     public void displayByTime(AlertModel alertModel)
     {
 
-        Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(3000,VibrationEffect.DEFAULT_AMPLITUDE));
-        }else
+        if (alertModel!=null)
         {
-            vibrator.vibrate(3000);
+            Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(3000,VibrationEffect.DEFAULT_AMPLITUDE));
+            }else
+            {
+                vibrator.vibrate(3000);
 
-        }
+            }
 
-        if (alertModel.getIs_alert()==1)
-        {
-            localNotification = new LocalNotification(context,alertModel.getDetails());
-            localNotification.manageNotification();
-        }
+            if (alertModel.getIs_alert()==1)
+            {
+                localNotification = new LocalNotification(context,alertModel.getDetails());
+                localNotification.manageNotification();
+            }
 
 
-        alertModel.setAlert_state(1);
-        dataBaseActions.update(alertModel);
+            alertModel.setAlert_state(1);
+            dataBaseActions.update(alertModel);
 
-        if (alertModel.getIs_inner_call()==1)
-        {
-            Intent intent = new Intent(context.getApplicationContext(), InnerCallActivity.class);
-            intent.putExtra("data",alertModel);
-            context.startActivity(intent);
-        }else
+            if (alertModel.getIs_inner_call()==1)
+            {
+                Intent intent = new Intent(context.getApplicationContext(), InnerCallActivity.class);
+                intent.putExtra("data",alertModel);
+                context.startActivity(intent);
+            }else
             {
                 if (alertModel.getIs_sound()==1)
                 {
                     initMediaPlayer(alertModel);
                 }
             }
+        }
 
 
+
+
+    }
+
+    @Override
+    public void displayAlertsByState(List<AlertModel> alertModelList) {
 
     }
 

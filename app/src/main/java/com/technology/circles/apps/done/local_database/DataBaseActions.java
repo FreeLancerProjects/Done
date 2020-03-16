@@ -55,6 +55,12 @@ public class DataBaseActions {
         new DisplayAlertByTimeAsyncTask().execute(time);
     }
 
+    public void displayAlertByState(int state)
+    {
+
+        new DisplayAlertByStateAsyncTask().execute(state);
+    }
+
     private class InsertAsyncTask extends AsyncTask<AlertModel,Void,Long> {
 
         @Override
@@ -116,6 +122,7 @@ public class DataBaseActions {
 
     private class DisplayAlertByTimeAsyncTask extends AsyncTask<String,Void,AlertModel>{
 
+
         @Override
         protected AlertModel doInBackground(String... strings) {
             AlertModel data= dao.getAlertByTime(strings[0]);
@@ -130,6 +137,22 @@ public class DataBaseActions {
         }
     }
 
+
+    private class DisplayAlertByStateAsyncTask extends AsyncTask<Integer,Void,List<AlertModel>>{
+
+        @Override
+        protected List<AlertModel> doInBackground(Integer... integers) {
+            List<AlertModel>  data= dao.getAllAlertsByState(integers[0]);
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(List<AlertModel> alertModelList) {
+            super.onPostExecute(alertModelList);
+            interaction.displayAlertsByState(alertModelList);
+
+        }
+    }
 
 
 }

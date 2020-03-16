@@ -18,6 +18,7 @@ import com.technology.circles.apps.done.R;
 import com.technology.circles.apps.done.activities_fragments.activity_home.HomeActivity;
 import com.technology.circles.apps.done.activities_fragments.activity_note_details.NoteDetailsActivity;
 import com.technology.circles.apps.done.adapters.AlertAdapter;
+import com.technology.circles.apps.done.broadcast.AlertManager;
 import com.technology.circles.apps.done.databinding.FragmentPublicePrivateBinding;
 import com.technology.circles.apps.done.local_database.AlertModel;
 import com.technology.circles.apps.done.local_database.DataBaseActions;
@@ -69,6 +70,8 @@ public class Fragment_Public extends Fragment implements DatabaseInteraction {
     }
     public void delete(AlertModel model) {
         dataBase.delete(model);
+        AlertManager alertManager = new AlertManager(activity.getApplicationContext());
+        alertManager.reStartAlarm();
 
 
     }
@@ -111,6 +114,10 @@ public class Fragment_Public extends Fragment implements DatabaseInteraction {
 
     }
 
+    @Override
+    public void displayAlertsByState(List<AlertModel> alertModelList) {
+
+    }
 
 
 }

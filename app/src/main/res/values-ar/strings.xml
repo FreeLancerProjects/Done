@@ -90,6 +90,7 @@
     <string name="ch_alert_type">إختر نوع التنبية</string>
     <string name="done_alert">تنبية دن</string>
     <string name="inner_call">إتصال داخلي</string>
-    <string name="reply">إستماع</string>
+    <string name="reply">رد</string>
+    <string name="listen">إستماع</string>
 
 </resources>

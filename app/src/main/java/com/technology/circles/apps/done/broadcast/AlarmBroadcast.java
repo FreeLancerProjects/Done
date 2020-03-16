@@ -1,4 +1,4 @@
-package com.technology.circles.apps.done.activities_fragments.broadcast;
+package com.technology.circles.apps.done.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -65,11 +65,11 @@ public class AlarmBroadcast extends BroadcastReceiver implements DatabaseInterac
 
         }
 
-        localNotification = new LocalNotification(context,alertModel.getDetails());
-        localNotification.manageNotification();
-
-
-
+        if (alertModel.getIs_alert()==1)
+        {
+            localNotification = new LocalNotification(context,alertModel.getDetails());
+            localNotification.manageNotification();
+        }
 
 
         alertModel.setAlert_state(1);

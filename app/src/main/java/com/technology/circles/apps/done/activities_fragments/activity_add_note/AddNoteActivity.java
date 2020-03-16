@@ -28,7 +28,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.technology.circles.apps.done.R;
 import com.technology.circles.apps.done.activities_fragments.activity_contact.ContactsActivity;
-import com.technology.circles.apps.done.activities_fragments.broadcast.AlertManager;
+import com.technology.circles.apps.done.broadcast.AlertManager;
 import com.technology.circles.apps.done.databinding.ActivityAddNoteBinding;
 import com.technology.circles.apps.done.interfaces.Listeners;
 import com.technology.circles.apps.done.language.LanguageHelper;

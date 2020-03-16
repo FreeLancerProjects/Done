@@ -1,4 +1,4 @@
-package com.technology.circles.apps.done.activities_fragments.broadcast;
+package com.technology.circles.apps.done.broadcast;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

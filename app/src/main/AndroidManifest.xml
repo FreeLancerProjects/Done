@@ -29,6 +29,8 @@
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:showOnLockScreen="true"
+            android:taskAffinity=""
+            android:launchMode="singleTask"
             />
         <activity
             android:name=".activities_fragments.activity_note_details.NoteDetailsActivity"
@@ -65,7 +67,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".activities_fragments.broadcast.AlarmBroadcast" />
+        <receiver android:name=".broadcast.AlarmBroadcast" />
     </application>
 
 </manifest>

@@ -63,6 +63,14 @@ public class InnerCallActivity extends AppCompatActivity {
     {
 
         initMediaPlayerRingtone();
+        if (alertModel.getIs_sound()==1)
+        {
+            binding.tvReply.setText(getString(R.string.listen));
+        }else
+            {
+                binding.tvReply.setText(getString(R.string.reply));
+
+            }
         binding.fab.setOnClickListener(view -> {
 
             if (mediaPlayer1!=null)
@@ -71,7 +79,16 @@ public class InnerCallActivity extends AppCompatActivity {
                 mediaPlayer1=null;
             }
 
-            initMediaPlayerCall();
+            if (alertModel.getIs_sound()==1)
+            {
+
+
+                initMediaPlayerCall();
+            }else
+                {
+                    finish();
+                }
+
         });
 
     }
@@ -155,5 +172,7 @@ public class InnerCallActivity extends AppCompatActivity {
             mediaPlayer2.release();
             mediaPlayer2=null;
         }
+
+        finish();
     }
 }

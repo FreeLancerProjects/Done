@@ -87,7 +87,8 @@
     <string name="ch_alert_type">Choose Alert Type</string>
     <string name="done_alert">Done Alert</string>
     <string name="inner_call">Inner Call</string>
-    <string name="reply">LISTEN</string>
+    <string name="reply">REPLY</string>
+    <string name="listen">LISTEN</string>
 
 
 </resources>

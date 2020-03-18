@@ -52,7 +52,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
@@ -68,6 +68,7 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.4"
     annotationProcessor "androidx.room:room-compiler:2.2.4"
     testImplementation "androidx.room:room-testing:2.2.4"
+    implementation 'com.ebanx:swipe-button:0.8.3'
 
 
 }

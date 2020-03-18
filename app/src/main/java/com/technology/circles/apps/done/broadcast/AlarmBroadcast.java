@@ -74,9 +74,6 @@ public class AlarmBroadcast extends BroadcastReceiver implements DatabaseInterac
             }
 
 
-            alertModel.setAlert_state(1);
-            dataBaseActions.update(alertModel);
-
             if (alertModel.getIs_inner_call()==1)
             {
                 Intent intent = new Intent(context.getApplicationContext(), InnerCallActivity.class);
@@ -89,6 +86,11 @@ public class AlarmBroadcast extends BroadcastReceiver implements DatabaseInterac
                     initMediaPlayer(alertModel);
                 }
             }
+            Log.e("rr","rrr");
+            alertModel.setAlert_state(1);
+            dataBaseActions.update(alertModel);
+
+
         }
 
 

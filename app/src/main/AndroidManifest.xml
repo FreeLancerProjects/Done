@@ -25,13 +25,21 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".activities_fragments.activity_inner_call.InnerCallActivity"
+        <activity android:name=".activities_fragments.activity_setting.SettingActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            />
+        <activity
+            android:name=".activities_fragments.activity_profile.ProfileActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".activities_fragments.activity_inner_call.InnerCallActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:launchMode="singleTask"
             android:showOnLockScreen="true"
             android:taskAffinity=""
-            android:launchMode="singleTask"
-            />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".activities_fragments.activity_note_details.NoteDetailsActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"

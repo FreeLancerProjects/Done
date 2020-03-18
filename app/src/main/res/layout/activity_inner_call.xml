@@ -35,9 +35,9 @@
             android:text="@string/inner_call"
             />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.ebanx.swipebtn.SwipeButton
             android:id="@+id/fab"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,25 +46,29 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             app:layout_constraintVertical_bias=".8"
-            app:fabSize="normal"
-            app:elevation="5dp"
-            app:borderWidth="1dp"
-            android:src="@drawable/ic_call2"
-            android:tint="@color/second"
-            app:backgroundTint="@color/white"
-            />
-        <TextView
-            android:id="@+id/tvReply"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fab"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/white"
-            android:textSize="18sp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            app:inner_text="@string/reply"
+            app:inner_text_color="@android:color/white"
+            app:inner_text_size="16sp"
+            app:inner_text_top_padding="10dp"
+            app:inner_text_bottom_padding="10dp"
+            app:inner_text_background="@drawable/btn_shape_reply"
+            app:button_image_height="50dp"
+            app:button_image_width="50dp"
+            app:button_image_disabled="@drawable/ic_call3"
+            app:button_image_enabled="@drawable/ic_call3"
+            app:button_left_padding="15dp"
+            app:button_right_padding="15dp"
+            app:button_top_padding="15dp"
+            app:button_bottom_padding="15dp"
+            app:button_background="@drawable/rounded_white"
+            app:initial_state="disabled"
+            app:has_activate_state="true"
 
             />
+
+
 
 
 

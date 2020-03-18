@@ -1,11 +1,12 @@
 package com.technology.circles.apps.done.broadcast;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
+import android.os.PowerManager;
 
 import com.technology.circles.apps.done.local_database.AlertModel;
 import com.technology.circles.apps.done.local_database.DataBaseActions;
@@ -28,18 +29,24 @@ public class AlertManager implements DatabaseInteraction {
 
     private void startAlarm(long time)
     {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"wake_lock");
+        wakeLock.acquire();
+
         String t = new SimpleDateFormat("dd/MMM/yyy hh:mm aa", Locale.ENGLISH).format(new Date(time));
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
         Intent intent = new Intent(context.getApplicationContext(), AlarmBroadcast.class);
         intent.putExtra("time",t);
         int id = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), id, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent);
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
 
         }
+        wakeLock.release();
     }
 
     public void reStartAlarm()
@@ -67,7 +74,6 @@ public class AlertManager implements DatabaseInteraction {
     @Override
     public void displayAlertsByState(List<AlertModel> alertModelList) {
 
-        Log.e("size",alertModelList.size()+"_");
 
         if (alertModelList.size()>0)
         {

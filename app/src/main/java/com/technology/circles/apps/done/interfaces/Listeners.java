@@ -25,8 +25,10 @@ public interface Listeners {
 
     interface SettingActionListener
     {
+        void profile();
         void contact();
         void changeLanguage();
+        void share();
         void about();
         void rateApp();
         void terms();

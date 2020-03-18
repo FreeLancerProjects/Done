@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,14 +66,14 @@ public class InnerCallActivity extends AppCompatActivity {
         initMediaPlayerRingtone();
         if (alertModel.getIs_sound()==1)
         {
-            binding.tvReply.setText(getString(R.string.listen));
+            binding.fab.setText(getString(R.string.listen));
         }else
             {
-                binding.tvReply.setText(getString(R.string.reply));
+                binding.fab.setText(getString(R.string.reply));
 
             }
-        binding.fab.setOnClickListener(view -> {
-
+        binding.fab.setOnActiveListener(() -> {
+            binding.fab.setVisibility(View.INVISIBLE);
             if (mediaPlayer1!=null)
             {
                 mediaPlayer1.release();
@@ -85,10 +86,9 @@ public class InnerCallActivity extends AppCompatActivity {
 
                 initMediaPlayerCall();
             }else
-                {
-                    finish();
-                }
-
+            {
+                finish();
+            }
         });
 
     }

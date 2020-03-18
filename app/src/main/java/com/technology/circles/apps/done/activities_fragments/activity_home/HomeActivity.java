@@ -13,6 +13,8 @@ import com.technology.circles.apps.done.R;
 import com.technology.circles.apps.done.activities_fragments.activity_add_note.AddNoteActivity;
 import com.technology.circles.apps.done.activities_fragments.activity_home.fragments.Fragment_Private;
 import com.technology.circles.apps.done.activities_fragments.activity_home.fragments.Fragment_Public;
+import com.technology.circles.apps.done.activities_fragments.activity_profile.ProfileActivity;
+import com.technology.circles.apps.done.activities_fragments.activity_setting.SettingActivity;
 import com.technology.circles.apps.done.adapters.ViewPagerAdapter;
 import com.technology.circles.apps.done.databinding.ActivityHomeBinding;
 import com.technology.circles.apps.done.language.LanguageHelper;
@@ -67,6 +69,17 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AddNoteActivity.class);
             startActivityForResult(intent,100);
         });
+        binding.imageProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+        });
+
+        binding.imageSetting.setOnClickListener(view -> {
+            Intent intent = new Intent(this, SettingActivity.class);
+            startActivityForResult(intent,200);
+        });
+
+
 
     }
 
@@ -79,6 +92,9 @@ public class HomeActivity extends AppCompatActivity {
             Fragment_Private fragment_private = (Fragment_Private) adapter.getItem(1);
             fragment_public.getAlerts();
             fragment_private.getAlerts();
+        }else if (requestCode ==200&&resultCode==RESULT_OK)
+        {
+
         }
     }
 }

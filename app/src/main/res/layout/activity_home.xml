@@ -38,10 +38,24 @@
                             android:layout_height="30dp"
                             android:src="@drawable/ic_user"
                             android:tint="@color/white"
-                            android:padding="3dp"
+                            android:padding="4dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
+                            />
+
+                        <ImageView
+                            android:id="@+id/imageSetting"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_setting"
+                            android:tint="@color/white"
+                            android:padding="3dp"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/imageProfile"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="15dp"
                             />
 
                         <FrameLayout

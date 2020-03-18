@@ -89,6 +89,9 @@
     <string name="inner_call">Inner Call</string>
     <string name="reply">REPLY</string>
     <string name="listen">LISTEN</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="save">Save</string>
+    <string name="rate_app">Rate App</string>
 
 
 </resources>

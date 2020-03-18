@@ -92,5 +92,8 @@
     <string name="inner_call">إتصال داخلي</string>
     <string name="reply">رد</string>
     <string name="listen">إستماع</string>
+    <string name="enter_password">أدخل كلمة المرور</string>
+    <string name="save">حفظ</string>
+    <string name="rate_app">التقييم</string>
 
 </resources>

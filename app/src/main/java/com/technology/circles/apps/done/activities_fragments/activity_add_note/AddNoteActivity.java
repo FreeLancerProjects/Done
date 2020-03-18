@@ -2,6 +2,7 @@ package com.technology.circles.apps.done.activities_fragments.activity_add_note;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -30,12 +32,14 @@ import com.technology.circles.apps.done.R;
 import com.technology.circles.apps.done.activities_fragments.activity_contact.ContactsActivity;
 import com.technology.circles.apps.done.broadcast.AlertManager;
 import com.technology.circles.apps.done.databinding.ActivityAddNoteBinding;
+import com.technology.circles.apps.done.databinding.DialogPasswordBinding;
 import com.technology.circles.apps.done.interfaces.Listeners;
 import com.technology.circles.apps.done.language.LanguageHelper;
 import com.technology.circles.apps.done.local_database.AlertModel;
 import com.technology.circles.apps.done.local_database.DataBaseActions;
 import com.technology.circles.apps.done.local_database.DatabaseInteraction;
 import com.technology.circles.apps.done.models.AddAlertModel;
+import com.technology.circles.apps.done.preferences.Preferences;
 import com.technology.circles.apps.done.share.Common;
 import com.technology.circles.apps.done.tags.Tags;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -54,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.paperdb.Paper;
 
-public class AddNoteActivity extends AppCompatActivity implements Listeners.BackListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener , DatabaseInteraction {
+public class AddNoteActivity extends AppCompatActivity implements Listeners.BackListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DatabaseInteraction {
 
     private ActivityAddNoteBinding binding;
     private String lang;
@@ -78,6 +82,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     private boolean isOutCall = false;
     private AddAlertModel model;
     private DataBaseActions dataBaseActions;
+    private Preferences preferences;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -97,6 +102,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
+        preferences = Preferences.newInstance();
         model = new AddAlertModel();
         dataBaseActions = new DataBaseActions(this);
         dataBaseActions.setInteraction(this);
@@ -238,6 +244,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         });
         binding.rbPrivate.setOnClickListener(view -> {
 
+
             model.setAlert_type(Tags.PRIVATE_ALERT);
             binding.setModel(model);
 
@@ -347,7 +354,18 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
             if (model.isDataValid(this)) {
                 Common.CloseKeyBoard(this, binding.edtDetails);
 
-                save();
+
+                if (model.getAlert_type() == Tags.PRIVATE_ALERT) {
+                    if (preferences.getPassword(this) == null || preferences.getPassword(this).isEmpty()) {
+                        createPasswordDialogAlert();
+                    } else {
+                        save();
+
+                    }
+                } else {
+                    save();
+
+                }
             }
         });
 
@@ -403,18 +421,17 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         calendarDate.setTimeInMillis(alertModel.getDate());
 
 
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.clear();
-        calendar.set(Calendar.DAY_OF_MONTH,calendarDate.get(Calendar.DAY_OF_MONTH));
-        calendar.set(Calendar.MONTH,calendarDate.get(Calendar.MONTH));
-        calendar.set(Calendar.YEAR,calendarDate.get(Calendar.YEAR));
-        calendar.set(Calendar.HOUR_OF_DAY,calendarTime.get(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE,calendarTime.get(Calendar.MINUTE));
+        calendar.set(Calendar.DAY_OF_MONTH, calendarDate.get(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.MONTH, calendarDate.get(Calendar.MONTH));
+        calendar.set(Calendar.YEAR, calendarDate.get(Calendar.YEAR));
+        calendar.set(Calendar.HOUR_OF_DAY, calendarTime.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, calendarTime.get(Calendar.MINUTE));
 
 
-        String time = new SimpleDateFormat("dd/MMM/yyy hh:mm aa",Locale.ENGLISH).format(new Date(calendar.getTimeInMillis()));
+        String time = new SimpleDateFormat("dd/MMM/yyy hh:mm aa", Locale.ENGLISH).format(new Date(calendar.getTimeInMillis()));
         alertModel.setAudio_name(model.getAudio_name());
         alertModel.setAlert_time(time);
         alertModel.setAlert_state(0);
@@ -424,8 +441,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         manager.reStartAlarm();
 
 
-        if (path!=null&&!path.isEmpty())
-        {
+        if (path != null && !path.isEmpty()) {
             deleteFile();
         }
 
@@ -443,17 +459,13 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         audioName = "AUD" + System.currentTimeMillis() + ".mp3";
         binding.tvName.setText(audioName);
 
-        File folder_done = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/Done_Audio");
+        File folder_done = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/Done_Audio");
 
-        if (!folder_done.exists())
-        {
+        if (!folder_done.exists()) {
             folder_done.mkdir();
         }
 
         path = folder_done.getAbsolutePath() + "/" + audioName;
-
-
-
 
 
         recorder = new MediaRecorder();
@@ -553,7 +565,6 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         }
     }
 
-
     private String getDuration(long duration) {
 
         String total_duration = "00:00";
@@ -572,6 +583,39 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     }
 
+    private void createPasswordDialogAlert() {
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .create();
+
+        DialogPasswordBinding binding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.dialog_password, null, false);
+
+        binding.btnSave.setOnClickListener(v ->
+                {
+                    String password = binding.edtPassword.getText().toString().trim();
+                    if (password.isEmpty()) {
+
+                        binding.edtPassword.setError(getString(R.string.field_required));
+
+                    } else if (password.length() < 6) {
+                        binding.edtPassword.setError(getString(R.string.pass_short));
+
+
+                    }else
+                        {
+                            preferences.create_update_password(this,password);
+                            binding.edtPassword.setError(null);
+                            Common.CloseKeyBoard(this,binding.edtPassword);
+                            save();
+                            dialog.dismiss();
+                        }
+                }
+        );
+        dialog.getWindow().getAttributes().windowAnimations = R.style.dialog_congratulation_animation;
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_window_bg);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setView(binding.getRoot());
+        dialog.show();
+    }
 
     private void createDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
@@ -598,7 +642,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         timePickerDialog.setOkText(getString(R.string.select));
         timePickerDialog.setCancelText(getString(R.string.cancel));
         timePickerDialog.setLocale(Locale.ENGLISH);
-        timePickerDialog.setMinTime(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
+        timePickerDialog.setMinTime(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
         timePickerDialog.setVersion(TimePickerDialog.Version.VERSION_2);
 
 
@@ -679,8 +723,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     private void deleteFile() {
 
-        if (path!=null&&!path.isEmpty())
-        {
+        if (path != null && !path.isEmpty()) {
             File file = new File(path);
             file.delete();
         }

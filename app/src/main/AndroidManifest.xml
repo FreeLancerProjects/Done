@@ -25,10 +25,14 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".activities_fragments.activity_setting.SettingActivity"
+        <activity android:name=".activity_about_app.AboutAppActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             />
+        <activity
+            android:name=".activities_fragments.activity_setting.SettingActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".activities_fragments.activity_profile.ProfileActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"

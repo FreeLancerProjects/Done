@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.technology.circles.apps.done.R;
 import com.technology.circles.apps.done.activities_fragments.activity_profile.ProfileActivity;
+import com.technology.circles.apps.done.activity_about_app.AboutAppActivity;
 import com.technology.circles.apps.done.databinding.ActivitySettingBinding;
 import com.technology.circles.apps.done.interfaces.Listeners;
 import com.technology.circles.apps.done.language.LanguageHelper;
@@ -40,7 +41,7 @@ public class SettingActivity extends AppCompatActivity implements Listeners.Back
         Paper.init(this);
         lang = Paper.book().read("lang","ar");
         binding.setBackListener(this);
-        binding.setBackListener(this);
+        binding.setAction(this);
         binding.setLang(lang);
     }
 
@@ -80,7 +81,9 @@ public class SettingActivity extends AppCompatActivity implements Listeners.Back
 
     @Override
     public void about() {
-
+        Intent intent = new Intent(this, AboutAppActivity.class);
+        intent.putExtra("type",2);
+        startActivity(intent);
     }
 
     @Override
@@ -97,6 +100,9 @@ public class SettingActivity extends AppCompatActivity implements Listeners.Back
     @Override
     public void terms() {
 
+        Intent intent = new Intent(this, AboutAppActivity.class);
+        intent.putExtra("type",1);
+        startActivity(intent);
     }
 
     @Override

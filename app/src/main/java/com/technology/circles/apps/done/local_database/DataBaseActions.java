@@ -42,7 +42,6 @@ public class DataBaseActions {
         new UpdateAsyncTask().execute(alertModel);
     }
 
-
     public void getAllAlertByType(int type)
     {
 
@@ -59,6 +58,18 @@ public class DataBaseActions {
     {
 
         new DisplayAlertByStateAsyncTask().execute(state);
+    }
+
+    public void displayAllAlert()
+    {
+
+        new DisplayAllAlertAsyncTask().execute();
+    }
+
+    public void insertAllAlert(List<AlertModel> alertModelList)
+    {
+
+        new InsertAllAlertAsyncTask().execute(alertModelList);
     }
 
     private class InsertAsyncTask extends AsyncTask<AlertModel,Void,Long> {
@@ -151,6 +162,32 @@ public class DataBaseActions {
             super.onPostExecute(alertModelList);
             interaction.displayAlertsByState(alertModelList);
 
+        }
+    }
+
+    private class DisplayAllAlertAsyncTask extends AsyncTask<Void,Void,List<AlertModel>>{
+
+        @Override
+        protected List<AlertModel> doInBackground(Void... voids) {
+            List<AlertModel>  data= dao.getAllAlertsData();
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(List<AlertModel> alertModelList) {
+            super.onPostExecute(alertModelList);
+            interaction.displayAllAlerts(alertModelList);
+
+        }
+    }
+
+    private class InsertAllAlertAsyncTask extends AsyncTask<List<AlertModel>,Void,Void>{
+
+
+        @Override
+        protected Void doInBackground(List<AlertModel>... lists) {
+            dao.insertAllData(lists[0]);
+            return null;
         }
     }
 

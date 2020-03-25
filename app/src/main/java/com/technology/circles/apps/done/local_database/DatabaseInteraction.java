@@ -8,6 +8,7 @@ public interface DatabaseInteraction {
     void displayData(List<AlertModel> alertModelList);
     void displayByTime(AlertModel alertModel);
     void displayAlertsByState(List<AlertModel> alertModelList);
+    void displayAllAlerts(List<AlertModel> alertModelList);
 
 
 }

@@ -119,5 +119,10 @@ public class Fragment_Public extends Fragment implements DatabaseInteraction {
 
     }
 
+    @Override
+    public void displayAllAlerts(List<AlertModel> alertModelList) {
+
+    }
+
 
 }

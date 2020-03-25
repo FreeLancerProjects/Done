@@ -57,7 +57,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.Holder> {
             holder.binding.imageMegaphone.setVisibility(View.GONE);
 
         }
-        if (model.getIs_outer_cal() == 1) {
+        if (model.getIs_outer_call() == 1) {
             holder.binding.imageCall.setVisibility(View.VISIBLE);
         } else {
             holder.binding.imageCall.setVisibility(View.GONE);

@@ -6,12 +6,9 @@
     <string name="terms_and_conditions">Terms of use</string>
     <string name="about_app">About</string>
     <string name="contact_us">Contact Us</string>
-
-
     <string name="back">Back</string>
     <string name="failed">Failed</string>
     <string name="something">Check internet connection</string>
-
     <string name="language_settings">Language Settings</string>
     <string name="sar">SAR</string>
     <string name="no_details">No details</string>
@@ -92,6 +89,11 @@
     <string name="enter_password">Enter Password</string>
     <string name="save">Save</string>
     <string name="rate_app">Rate App</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="user_found">User is found</string>
+    <string name="sync_data">Sync Data...</string>
+    <string name="download">Download</string>
+    <string name="downloading">Downloading...</string>
 
 
 </resources>

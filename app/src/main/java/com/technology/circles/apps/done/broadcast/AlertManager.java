@@ -100,4 +100,9 @@ public class AlertManager implements DatabaseInteraction {
         }
 
     }
+
+    @Override
+    public void displayAllAlerts(List<AlertModel> alertModelList) {
+
+    }
 }

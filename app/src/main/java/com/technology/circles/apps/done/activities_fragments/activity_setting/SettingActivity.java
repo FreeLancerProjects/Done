@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.technology.circles.apps.done.R;
 import com.technology.circles.apps.done.activities_fragments.activity_profile.ProfileActivity;
-import com.technology.circles.apps.done.activity_about_app.AboutAppActivity;
+import com.technology.circles.apps.done.activities_fragments.activity_about_app.AboutAppActivity;
 import com.technology.circles.apps.done.databinding.ActivitySettingBinding;
 import com.technology.circles.apps.done.interfaces.Listeners;
 import com.technology.circles.apps.done.language.LanguageHelper;

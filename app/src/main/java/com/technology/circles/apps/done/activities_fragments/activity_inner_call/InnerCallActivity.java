@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -18,8 +17,6 @@ import com.technology.circles.apps.done.language.LanguageHelper;
 import com.technology.circles.apps.done.local_database.AlertModel;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import io.paperdb.Paper;
@@ -28,7 +25,6 @@ public class InnerCallActivity extends AppCompatActivity {
     private ActivityInnerCallBinding binding;
     private AlertModel alertModel;
     private MediaPlayer mediaPlayer1,mediaPlayer2;
-    private String path;
 
     @Override
     protected void attachBaseContext(Context newBase)
@@ -106,57 +102,25 @@ public class InnerCallActivity extends AppCompatActivity {
     private void initMediaPlayerCall()
     {
         mediaPlayer2 = new MediaPlayer();
-        mediaPlayer2 = new MediaPlayer();
-        File file = getFile(alertModel.getSound(),alertModel);
-        if (file!=null)
+        Log.e("path",alertModel.getAudio_path());
+        File file = new File(alertModel.getAudio_path());
+        if (file.exists())
         {
             try {
-                mediaPlayer2.setDataSource(file.getAbsolutePath());
+                mediaPlayer2.setDataSource(alertModel.getAudio_path());
                 mediaPlayer2.prepare();
                 mediaPlayer2.setOnPreparedListener(MediaPlayer::start);
                 mediaPlayer2.setOnCompletionListener(mediaPlayer -> {
-                    File file2 = new File(path);
-                    file2.delete();
                     finish();
                 });
-
+                Log.e("rrrr","ttttt");
             } catch (IOException e) {
+                Log.e("ex",e.getMessage()+"_");
                 e.printStackTrace();
             }
         }
     }
 
-    private File getFile(byte[] sound,AlertModel alertModel)
-    {
-
-        File file = null;
-        try {
-
-
-            File folder_done = new File(Environment.getExternalStorageDirectory().getAbsoluteFile()+"/Done_Audio");
-
-            if (!folder_done.exists())
-            {
-                folder_done.mkdir();
-            }
-
-            path = folder_done.getAbsolutePath() + "/" + alertModel.getAudio_name();
-
-            file = new File(path);
-
-            FileOutputStream outputStream = new FileOutputStream(file);
-            outputStream.write(sound);
-            outputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Log.e("ex",e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("ex2",e.getMessage());
-
-        }
-        return file;
-    }
 
     @Override
     public void onBackPressed()
@@ -174,5 +138,6 @@ public class InnerCallActivity extends AppCompatActivity {
         }
 
         finish();
+
     }
 }

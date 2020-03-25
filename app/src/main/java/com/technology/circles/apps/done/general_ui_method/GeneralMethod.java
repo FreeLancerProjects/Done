@@ -9,10 +9,14 @@ import androidx.databinding.BindingAdapter;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.squareup.picasso.Picasso;
+import com.technology.circles.apps.done.R;
+import com.technology.circles.apps.done.tags.Tags;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class GeneralMethod {
@@ -41,12 +45,17 @@ public class GeneralMethod {
         }
     }
 
-    @BindingAdapter("url")
-    public static void displayImageUrl(View view, String url) {
+    @BindingAdapter("endPoint")
+    public static void displayProfileImage(View view, String endPoint) {
         if (view instanceof RoundedImageView) {
 
             RoundedImageView imageView = (RoundedImageView) view;
-            Picasso.with(view.getContext()).load(Uri.parse(url)).fit().into(imageView);
+            Picasso.get().load(Uri.parse(Tags.image_path+endPoint)).placeholder(R.drawable.user_avatar).fit().into(imageView);
+        }else if (view instanceof CircleImageView)
+        {
+            CircleImageView imageView = (CircleImageView) view;
+            Picasso.get().load(Uri.parse(Tags.image_path+endPoint)).placeholder(R.drawable.user_avatar).fit().into(imageView);
+
         }
     }
 

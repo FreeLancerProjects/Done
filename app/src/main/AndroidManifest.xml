@@ -25,10 +25,18 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".activity_about_app.AboutAppActivity"
+        <activity android:name=".activities_fragments.activity_sync_data.SyncDataActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             />
+        <activity
+            android:name=".activities_fragments.activity_signup.SignUpActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".activities_fragments.activity_about_app.AboutAppActivity"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".activities_fragments.activity_setting.SettingActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"

@@ -2,7 +2,6 @@ package com.technology.circles.apps.done.local_database;
 
 
 
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -15,46 +14,108 @@ public class AlertModel implements Serializable {
     @NotNull
     @PrimaryKey(autoGenerate = true)
     private long id;
+    private String alert_id;
     private long time;
     private long date;
     private int alert_type;
     private int is_alert;
     private int is_inner_call;
-    private int is_outer_cal;
+    private int is_outer_call;
     private int is_sound;
     private String alert_time;
     private String audio_name;
+    private String audio_path;
     private int alert_state;
-
-
+    private int isOnline;
     private String details;
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    private byte [] sound;
 
-    public AlertModel(long time, long date, int alert_type, int is_alert, int is_inner_call, int is_outer_cal, String details) {
+
+    public AlertModel() {
+    }
+
+    public AlertModel(String alert_id,long time, long date, int alert_type, int is_alert, int is_inner_call, int is_outer_call, int isOnline, String details) {
+        this.alert_id = alert_id;
         this.time = time;
         this.date = date;
         this.alert_type = alert_type;
         this.is_alert = is_alert;
         this.is_inner_call = is_inner_call;
-        this.is_outer_cal = is_outer_cal;
+        this.is_outer_call = is_outer_call;
         this.details = details;
+        this.isOnline = isOnline;
+    }
+
+
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    public long getId() {
-        return id;
-    }
-
     public long getTime() {
         return time;
     }
 
+    public void setTime(long time) {
+        this.time = time;
+    }
+
     public long getDate() {
         return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public int getAlert_type() {
+        return alert_type;
+    }
+
+    public void setAlert_type(int alert_type) {
+        this.alert_type = alert_type;
+    }
+
+    public int getIs_alert() {
+        return is_alert;
+    }
+
+    public void setIs_alert(int is_alert) {
+        this.is_alert = is_alert;
+    }
+
+    public int getIs_inner_call() {
+        return is_inner_call;
+    }
+
+    public void setIs_inner_call(int is_inner_call) {
+        this.is_inner_call = is_inner_call;
+    }
+
+    public int getIs_outer_call() {
+        return is_outer_call;
+    }
+
+    public void setIs_outer_call(int is_outer_call) {
+        this.is_outer_call = is_outer_call;
+    }
+
+    public int getIs_sound() {
+        return is_sound;
+    }
+
+    public void setIs_sound(int is_sound) {
+        this.is_sound = is_sound;
+    }
+
+    public String getAlert_time() {
+        return alert_time;
+    }
+
+    public void setAlert_time(String alert_time) {
+        this.alert_time = alert_time;
     }
 
     public String getAudio_name() {
@@ -73,75 +134,35 @@ public class AlertModel implements Serializable {
         this.alert_state = alert_state;
     }
 
-    public String getAlert_time() {
-        return alert_time;
+    public int getIsOnline() {
+        return isOnline;
     }
 
-    public void setAlert_time(String alert_time) {
-        this.alert_time = alert_time;
-    }
-
-    public int getAlert_type() {
-        return alert_type;
-    }
-
-    public int getIs_alert() {
-        return is_alert;
-    }
-
-    public int getIs_inner_call() {
-        return is_inner_call;
-    }
-
-    public int getIs_outer_cal() {
-        return is_outer_cal;
+    public void setIsOnline(int isOnline) {
+        this.isOnline = isOnline;
     }
 
     public String getDetails() {
         return details;
     }
 
-    public byte[] getSound() {
-        return sound;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
-
-    public void setDate(long date) {
-        this.date = date;
-    }
-
-    public void setAlert_type(int alert_type) {
-        this.alert_type = alert_type;
-    }
-
-    public void setIs_alert(int is_alert) {
-        this.is_alert = is_alert;
-    }
-
-    public void setIs_inner_call(int is_inner_call) {
-        this.is_inner_call = is_inner_call;
-    }
-
-    public void setIs_outer_cal(int is_outer_cal) {
-        this.is_outer_cal = is_outer_cal;
-    }
-
     public void setDetails(String details) {
         this.details = details;
     }
 
-    public void setSound(byte[] sound) {
-        this.sound = sound;
+    public void setAlert_id(String alert_id) {
+        this.alert_id = alert_id;
     }
 
-    public int getIs_sound() {
-        return is_sound;
+    public String getAlert_id() {
+        return alert_id;
     }
 
-    public void setIs_sound(int is_sound) {
-        this.is_sound = is_sound;
+    public String getAudio_path() {
+        return audio_path;
+    }
+
+    public void setAudio_path(String audio_path) {
+        this.audio_path = audio_path;
     }
 }

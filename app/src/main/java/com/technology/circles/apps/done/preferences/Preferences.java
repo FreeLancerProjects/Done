@@ -30,6 +30,17 @@ public class Preferences {
         return userModel;
     }
 
+    public void create_update_user_date(Context context , UserModel userModel)
+    {
+        SharedPreferences preferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        Gson gson = new Gson();
+        String data = gson.toJson(userModel);
+        editor.putString("user_data",data);
+        editor.apply();
+        create_update_session(context,Tags.session_login);
+    }
+
     public void create_update_session(Context context, String session) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE);
 

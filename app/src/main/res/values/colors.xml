@@ -22,6 +22,7 @@
 
     <color name="red">#920a0c</color>
     <color name="green">#009632</color>
+    <color name="primary_alpha">#550a4161</color>
 
 
 </resources>

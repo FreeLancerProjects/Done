@@ -14,7 +14,7 @@ import com.mukesh.countrypicker.Country;
 import com.mukesh.countrypicker.CountryPicker;
 import com.mukesh.countrypicker.listeners.OnCountryPickerListener;
 import com.technology.circles.apps.done.R;
-import com.technology.circles.apps.done.activities_fragments.activity_home.HomeActivity;
+import com.technology.circles.apps.done.activities_fragments.activity_verification_code.VerificationCodeActivity;
 import com.technology.circles.apps.done.databinding.ActivityLoginBinding;
 import com.technology.circles.apps.done.interfaces.Listeners;
 import com.technology.circles.apps.done.language.LanguageHelper;
@@ -30,6 +30,7 @@ public class LoginActivity extends AppCompatActivity implements OnCountryPickerL
     private String lang;
     private CountryPicker picker;
     private String code;
+
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -87,15 +88,12 @@ public class LoginActivity extends AppCompatActivity implements OnCountryPickerL
 
     private void navigateToVerificationActivity(String phone) {
 
-        /*Intent intent = new Intent(this, VerificationCodeActivity.class);
+        Intent intent = new Intent(this, VerificationCodeActivity.class);
         intent.putExtra("phone_code",code);
         intent.putExtra("phone",phone);
         startActivity(intent);
-        finish();*/
-
-        Intent intent = new Intent(this, HomeActivity.class);
-        startActivity(intent);
         finish();
+
     }
 
 

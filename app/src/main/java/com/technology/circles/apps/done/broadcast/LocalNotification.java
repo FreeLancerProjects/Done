@@ -45,6 +45,8 @@ public class LocalNotification {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,channel_id);
         builder.setChannelId(channel_id);
+        channel.setDescription("no sound");
+
         builder.setSmallIcon(R.mipmap.ic_launcher_round);
         builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),R.mipmap.ic_launcher_round));
         builder.setContentTitle(context.getString(R.string.done_alert));

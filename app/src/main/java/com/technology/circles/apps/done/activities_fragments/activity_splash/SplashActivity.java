@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 
 import com.technology.circles.apps.done.R;
 import com.technology.circles.apps.done.activities_fragments.activity_login.LoginActivity;
+import com.technology.circles.apps.done.activities_fragments.activity_sync_data.SyncDataActivity;
 import com.technology.circles.apps.done.databinding.ActivitySplashBinding;
 import com.technology.circles.apps.done.language.LanguageHelper;
 import com.technology.circles.apps.done.preferences.Preferences;
@@ -50,7 +51,9 @@ public class SplashActivity extends AppCompatActivity {
 
                 if (session.equals(Tags.session_login))
                 {
-
+                    Intent intent = new Intent(SplashActivity.this, SyncDataActivity.class);
+                    startActivity(intent);
+                    finish();
                 }else
                     {
                         Intent intent = new Intent(SplashActivity.this, LoginActivity.class);

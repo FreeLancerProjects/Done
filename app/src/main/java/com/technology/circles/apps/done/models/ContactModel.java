@@ -5,8 +5,10 @@ import java.io.Serializable;
 public class ContactModel implements Serializable {
     private String name;
     private String phone;
+    private boolean isUseApp;
 
     public ContactModel() {
+        isUseApp= false;
     }
 
     public ContactModel(String name, String phone) {
@@ -28,5 +30,13 @@ public class ContactModel implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public boolean isUseApp() {
+        return isUseApp;
+    }
+
+    public void setUseApp(boolean useApp) {
+        isUseApp = useApp;
     }
 }

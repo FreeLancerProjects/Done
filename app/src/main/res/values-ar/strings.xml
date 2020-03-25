@@ -95,5 +95,10 @@
     <string name="enter_password">أدخل كلمة المرور</string>
     <string name="save">حفظ</string>
     <string name="rate_app">التقييم</string>
+    <string name="sign_up">إنشاء حساب</string>
+    <string name="user_found">المستخدم موجود</string>
+    <string name="sync_data">مزامنة البيانات...</string>
+    <string name="download">تنزيل</string>
+    <string name="downloading">جار التنزيل...</string>
 
 </resources>

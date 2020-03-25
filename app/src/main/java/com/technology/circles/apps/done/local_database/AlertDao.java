@@ -29,4 +29,10 @@ public interface AlertDao {
 
     @Query("SELECT * FROM alerts_table WHERE alert_state =:type ORDER BY id ASC")
     List<AlertModel> getAllAlertsByState(int type);
+
+    @Query("SELECT * FROM alerts_table")
+    List<AlertModel> getAllAlertsData();
+
+    @Insert
+    void insertAllData(List<AlertModel> alertModel);
 }

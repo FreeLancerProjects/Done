@@ -3,6 +3,7 @@ package com.technology.circles.apps.done.activities_fragments.activity_add_note;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,7 +11,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,24 +39,31 @@ import com.technology.circles.apps.done.local_database.AlertModel;
 import com.technology.circles.apps.done.local_database.DataBaseActions;
 import com.technology.circles.apps.done.local_database.DatabaseInteraction;
 import com.technology.circles.apps.done.models.AddAlertModel;
+import com.technology.circles.apps.done.models.UserModel;
 import com.technology.circles.apps.done.preferences.Preferences;
+import com.technology.circles.apps.done.remote.Api;
 import com.technology.circles.apps.done.share.Common;
 import com.technology.circles.apps.done.tags.Tags;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import io.paperdb.Paper;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddNoteActivity extends AppCompatActivity implements Listeners.BackListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DatabaseInteraction {
 
@@ -68,8 +75,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     private final String write_perm = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private final String audio_perm = Manifest.permission.RECORD_AUDIO;
     private final int write_req = 100;
-    private String path;
-    private String audioName;
+
     private boolean isPermissionGranted = false;
     private MediaPlayer mediaPlayer;
     private Handler handler;
@@ -83,6 +89,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     private AddAlertModel model;
     private DataBaseActions dataBaseActions;
     private Preferences preferences;
+    private UserModel userModel;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -103,6 +110,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
         preferences = Preferences.newInstance();
+        userModel = preferences.getUserData(this);
         model = new AddAlertModel();
         dataBaseActions = new DataBaseActions(this);
         dataBaseActions.setInteraction(this);
@@ -229,12 +237,20 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         });
         binding.imageDelete.setOnClickListener(view -> {
             binding.cardView.setVisibility(View.GONE);
-
-            File file = new File(path);
-            file.delete();
-            path = "";
+            deleteFile();
+            model.setAudio_name("");
             model.setSound_path("");
             binding.setModel(model);
+            if (mediaPlayer!=null)
+            {
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+
+            if (handler != null && runnable != null) {
+                handler.removeCallbacks(runnable);
+                runnable = null;
+            }
         });
         binding.rbPublic.setOnClickListener(view -> {
 
@@ -392,25 +408,11 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         }
 
 
-        AlertModel alertModel = new AlertModel(model.getTime(), model.getDate(), model.getAlert_type(), alert, in_call, out_call, model.getDetails());
+        AlertModel alertModel = new AlertModel(UUID.randomUUID().toString(),model.getTime(), model.getDate(), model.getAlert_type(), alert, in_call, out_call, 0, model.getDetails());
 
         if (!model.getSound_path().isEmpty()) {
             is_sound = 1;
-            File file = new File(model.getSound_path());
-            byte[] sound = new byte[(int) file.length()];
 
-            try {
-                FileInputStream inputStream = new FileInputStream(file);
-                inputStream.read(sound);
-                inputStream.close();
-                alertModel.setSound(sound);
-
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
 
         alertModel.setIs_sound(is_sound);
@@ -431,41 +433,188 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         calendar.set(Calendar.MINUTE, calendarTime.get(Calendar.MINUTE));
 
 
-        String time = new SimpleDateFormat("dd/MMM/yyy hh:mm aa", Locale.ENGLISH).format(new Date(calendar.getTimeInMillis()));
+        String time = new SimpleDateFormat("dd/MMM/yyyy hh:mm aa", Locale.ENGLISH).format(new Date(calendar.getTimeInMillis()));
         alertModel.setAudio_name(model.getAudio_name());
         alertModel.setAlert_time(time);
         alertModel.setAlert_state(0);
+        alertModel.setAudio_path(model.getSound_path());
         dataBaseActions.insert(alertModel);
 
         AlertManager manager = new AlertManager(this);
         manager.reStartAlarm();
 
 
-        if (path != null && !path.isEmpty()) {
-            deleteFile();
-        }
-
-        setResult(RESULT_OK);
         finish();
+        /*if (alertModel.getIs_sound()==1)
+        {
+            saveOnlineWithSound(alertModel);
+        }else
+            {
+                saveOnlineWithoutSound(alertModel);
+
+            }*/
 
     }
 
+    private void saveOnlineWithSound(AlertModel alertModel)
+    {
+        ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.show();
+
+        RequestBody alert_id_part = Common.getRequestBodyText(alertModel.getAlert_id());
+
+        RequestBody time_int_part = Common.getRequestBodyText(String.valueOf(alertModel.getTime()));
+        RequestBody date_int_part = Common.getRequestBodyText(String.valueOf(alertModel.getDate()));
+        RequestBody alert_type_part = Common.getRequestBodyText(String.valueOf(alertModel.getAlert_type()));
+        RequestBody is_alert_part = Common.getRequestBodyText(String.valueOf(alertModel.getIs_alert()));
+        RequestBody inner_call_part = Common.getRequestBodyText(String.valueOf(alertModel.getIs_inner_call()));
+        RequestBody outer_call_part = Common.getRequestBodyText(String.valueOf(alertModel.getIs_outer_call()));
+        RequestBody is_sound_part = Common.getRequestBodyText(String.valueOf(alertModel.getIs_sound()));
+        RequestBody details_part = Common.getRequestBodyText(String.valueOf(alertModel.getDetails()));
+        RequestBody alert_state_part = Common.getRequestBodyText(String.valueOf(alertModel.getAlert_state()));
+        RequestBody alert_time_part = Common.getRequestBodyText(String.valueOf(alertModel.getAlert_time()));
+        MultipartBody.Part sound_file_part = Common.getMultiPartSound(model.getSound_path(), "sound_file");
+
+
+        Api.getService(Tags.base_url)
+                .makeAlertWithSound(userModel.getToken(),alert_id_part, time_int_part, date_int_part, alert_type_part, is_alert_part, inner_call_part, outer_call_part, is_sound_part, details_part, alert_state_part, alert_time_part, sound_file_part)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        dialog.dismiss();
+                        if (response.isSuccessful()) {
+
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+
+                            setResult(RESULT_OK);
+                            finish();
+
+                            if (response.code() == 500) {
+                                Toast.makeText(AddNoteActivity.this, "Server Error", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(AddNoteActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                            }
+
+                            try {
+                                Log.e("error_code", response.code() + "__" + response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+
+                            setResult(RESULT_OK);
+                            finish();
+                            if (t.getMessage() != null) {
+                                Log.e("msg_category_error", t.getMessage() + "__");
+
+                                if (t.getMessage().toLowerCase().contains("failed to connect") || t.getMessage().toLowerCase().contains("unable to resolve host")) {
+                                    Toast.makeText(AddNoteActivity.this, getString(R.string.something), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(AddNoteActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+    }
+
+    private void saveOnlineWithoutSound(AlertModel alertModel) {
+
+        ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
+        dialog.setCancelable(false);
+        dialog.show();
+        RequestBody alert_id_part = Common.getRequestBodyText(alertModel.getAlert_id());
+        RequestBody time_int_part = Common.getRequestBodyText(String.valueOf(alertModel.getTime()));
+        RequestBody date_int_part = Common.getRequestBodyText(String.valueOf(alertModel.getDate()));
+        RequestBody alert_type_part = Common.getRequestBodyText(String.valueOf(alertModel.getAlert_type()));
+        RequestBody is_alert_part = Common.getRequestBodyText(String.valueOf(alertModel.getIs_alert()));
+        RequestBody inner_call_part = Common.getRequestBodyText(String.valueOf(alertModel.getIs_inner_call()));
+        RequestBody outer_call_part = Common.getRequestBodyText(String.valueOf(alertModel.getIs_outer_call()));
+        RequestBody is_sound_part = Common.getRequestBodyText(String.valueOf(alertModel.getIs_sound()));
+        RequestBody details_part = Common.getRequestBodyText(String.valueOf(alertModel.getDetails()));
+        RequestBody alert_state_part = Common.getRequestBodyText(String.valueOf(alertModel.getAlert_state()));
+        RequestBody alert_time_part = Common.getRequestBodyText(String.valueOf(alertModel.getAlert_time()));
+
+
+        Api.getService(Tags.base_url)
+                .makeAlertWithoutSound(userModel.getToken(),alert_id_part, time_int_part, date_int_part, alert_type_part, is_alert_part, inner_call_part, outer_call_part, is_sound_part, details_part, alert_state_part, alert_time_part)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        dialog.dismiss();
+                        if (response.isSuccessful()) {
+
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+
+                            setResult(RESULT_OK);
+                            finish();
+
+                            if (response.code() == 500) {
+                                Toast.makeText(AddNoteActivity.this, "Server Error", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(AddNoteActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                            }
+
+                            try {
+                                Log.e("error_code", response.code() + "__" + response.errorBody().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        try {
+                            dialog.dismiss();
+
+                            setResult(RESULT_OK);
+                            finish();
+                            if (t.getMessage() != null) {
+                                Log.e("msg_category_error", t.getMessage() + "__");
+
+                                if (t.getMessage().toLowerCase().contains("failed to connect") || t.getMessage().toLowerCase().contains("unable to resolve host")) {
+                                    Toast.makeText(AddNoteActivity.this, getString(R.string.something), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(AddNoteActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+                });
+
+    }
 
     private void initRecorder() {
 
-
+        Calendar calendar = Calendar.getInstance();
         binding.cardView.setVisibility(View.GONE);
         isPermissionGranted = true;
-        audioName = "AUD" + System.currentTimeMillis() + ".mp3";
+        String audioName = "AUD" + calendar.getTimeInMillis()+ ".mp3";
         binding.tvName.setText(audioName);
 
-        File folder_done = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/Done_Audio");
+        File folder_done = new File(Tags.local_folder_path);
 
         if (!folder_done.exists()) {
             folder_done.mkdir();
         }
 
-        path = folder_done.getAbsolutePath() + "/" + audioName;
+        String path = folder_done.getAbsolutePath() + "/" + audioName;
 
 
         recorder = new MediaRecorder();
@@ -486,10 +635,9 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("Faild", "Failed");
+            Log.e("Failed", "Failed");
             binding.imageWave.setVisibility(View.GONE);
             binding.cardView.setVisibility(View.GONE);
-            deleteFile();
 
             if (mediaPlayer != null) {
                 mediaPlayer.release();
@@ -508,7 +656,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
 
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(path);
+            mediaPlayer.setDataSource(model.getSound_path());
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setVolume(100.0f, 100.0f);
             mediaPlayer.setLooping(false);
@@ -532,8 +680,6 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
         } catch (IOException e) {
             Log.e("eeeex", e.getMessage());
-            File file = new File(path);
-            file.delete();
             binding.imageWave.setVisibility(View.GONE);
             mediaPlayer.release();
             mediaPlayer = null;
@@ -557,8 +703,13 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     private void checkWritePermission() {
 
-        if (ContextCompat.checkSelfPermission(this, write_perm) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, audio_perm) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, audio_perm) != PackageManager.PERMISSION_GRANTED) {
+
+
+            isPermissionGranted = false;
+
             ActivityCompat.requestPermissions(this, new String[]{write_perm, audio_perm}, write_req);
+
 
         } else {
             isPermissionGranted = true;
@@ -600,14 +751,13 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                         binding.edtPassword.setError(getString(R.string.pass_short));
 
 
-                    }else
-                        {
-                            preferences.create_update_password(this,password);
-                            binding.edtPassword.setError(null);
-                            Common.CloseKeyBoard(this,binding.edtPassword);
-                            save();
-                            dialog.dismiss();
-                        }
+                    } else {
+                        preferences.create_update_password(this, password);
+                        binding.edtPassword.setError(null);
+                        Common.CloseKeyBoard(this, binding.edtPassword);
+                        save();
+                        dialog.dismiss();
+                    }
                 }
         );
         dialog.getWindow().getAttributes().windowAnimations = R.style.dialog_congratulation_animation;
@@ -702,12 +852,22 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == write_req && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
             isPermissionGranted = true;
+            binding.imageWave.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void back() {
+        deleteFile();
         finish();
+    }
+
+    private void deleteFile() {
+        File file = new File(model.getSound_path());
+        if (file.exists())
+        {
+            file.delete();
+        }
     }
 
     @Override
@@ -716,18 +876,11 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else {
-            deleteFile();
             back();
         }
     }
 
-    private void deleteFile() {
 
-        if (path != null && !path.isEmpty()) {
-            File file = new File(path);
-            file.delete();
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -746,7 +899,8 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     @Override
     public void insertedSuccess() {
-
+        File file = new File(model.getSound_path());
+        //FileOutputStream outputStream = new FileOutputStream()
     }
 
     @Override
@@ -761,6 +915,11 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     @Override
     public void displayAlertsByState(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
+    public void displayAllAlerts(List<AlertModel> alertModelList) {
 
     }
 

@@ -358,7 +358,7 @@
                             android:paddingBottom="5dp"
                             android:layout_marginStart="50dp"
                             android:layout_marginEnd="50dp"
-                            android:visibility="@{model.is_outer_cal==1?View.VISIBLE:View.GONE,default=gone}"
+                            android:visibility="@{model.is_outer_call==1?View.VISIBLE:View.GONE,default=gone}"
 
 
                             >
@@ -411,7 +411,59 @@
                         android:text="@{model.details}"
                         />
 
+                    <LinearLayout
+                        android:id="@+id/llDownload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:layout_gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        >
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:clickable="false"
+                            android:longClickable="false"
 
+
+                            >
+                            <ImageView
+                                android:id="@+id/imageDownload"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_download"
+                                android:tint="@color/colorPrimary"
+                                android:clickable="false"
+                                android:longClickable="false"
+                                />
+                            <ProgressBar
+                                android:id="@+id/progBar"
+                                android:layout_width="55dp"
+                                android:layout_height="55dp"
+                                android:layout_gravity="center"
+                                android:visibility="gone"
+                                android:clickable="false"
+                                android:longClickable="false"
+
+                                />
+                        </FrameLayout>
+
+                        <TextView
+                            android:id="@+id/tvDownload"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary"
+                            android:layout_marginTop="8dp"
+                            android:textSize="18sp"
+                            android:text="@string/download"
+                            android:layout_gravity="center_horizontal"
+                            />
+
+
+                    </LinearLayout>
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/cardView"

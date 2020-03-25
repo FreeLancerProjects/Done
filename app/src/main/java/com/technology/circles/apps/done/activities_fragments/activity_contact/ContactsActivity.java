@@ -96,12 +96,21 @@ public class ContactsActivity extends AppCompatActivity implements Listeners.Bac
 
 
         }
-        binding.progBar.setVisibility(View.GONE);
-        adapter.notifyDataSetChanged();
-        binding.setCount(contactModelList.size());
+        if (contactModelList.size()>0)
+        {
+            binding.setCount(contactModelList.size());
+
+        }else
+            {
+                binding.progBar.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+                binding.setCount(contactModelList.size());
+            }
+
 
 
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

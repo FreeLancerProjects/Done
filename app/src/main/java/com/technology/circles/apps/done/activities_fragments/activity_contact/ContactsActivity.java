@@ -99,6 +99,8 @@ public class ContactsActivity extends AppCompatActivity implements Listeners.Bac
         if (contactModelList.size()>0)
         {
             binding.setCount(contactModelList.size());
+            binding.progBar.setVisibility(View.GONE);
+            adapter.notifyDataSetChanged();
 
         }else
             {

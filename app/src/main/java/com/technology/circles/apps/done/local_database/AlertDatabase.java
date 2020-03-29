@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 
-@Database(entities = {AlertModel.class},version = 1)
+@Database(entities = {AlertModel.class,DeletedAlerts.class},version = 1)
 public abstract class AlertDatabase extends RoomDatabase {
 
     private static AlertDatabase instance = null;

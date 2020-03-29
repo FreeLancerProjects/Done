@@ -199,6 +199,7 @@
                     android:textSize="14sp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    android:singleLine="true"
                     android:text="@{model.details}"
                     android:clickable="false"
                     android:longClickable="false"

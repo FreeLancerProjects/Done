@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.PowerManager;
+import android.util.Log;
 
 import com.technology.circles.apps.done.local_database.AlertModel;
 import com.technology.circles.apps.done.local_database.DataBaseActions;
 import com.technology.circles.apps.done.local_database.DatabaseInteraction;
+import com.technology.circles.apps.done.local_database.DeletedAlerts;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -56,6 +58,33 @@ public class AlertManager implements DatabaseInteraction {
         dataBaseActions.displayAlertByState(0);
     }
 
+    public void startNewAlarm(AlertModel alertModel)
+    {
+        Calendar calendarTime = Calendar.getInstance();
+        calendarTime.setTimeInMillis(System.currentTimeMillis());
+        calendarTime.clear();
+
+        Calendar calendarDate = Calendar.getInstance();
+        calendarDate.setTimeInMillis(System.currentTimeMillis());
+        calendarDate.clear();
+        calendarTime.setTimeInMillis(alertModel.getTime());
+        calendarDate.setTimeInMillis(alertModel.getDate());
+
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.clear();
+        calendar.set(Calendar.DAY_OF_MONTH,calendarDate.get(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.MONTH,calendarDate.get(Calendar.MONTH));
+        calendar.set(Calendar.YEAR,calendarDate.get(Calendar.YEAR));
+        calendar.set(Calendar.HOUR_OF_DAY,calendarTime.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE,calendarTime.get(Calendar.MINUTE));
+
+
+        startAlarm(calendar.getTimeInMillis());
+    }
+
     @Override
     public void insertedSuccess() {
 
@@ -74,13 +103,26 @@ public class AlertManager implements DatabaseInteraction {
     @Override
     public void displayAlertsByState(List<AlertModel> alertModelList) {
 
+        try {
+            Log.e("size_state",alertModelList.size()+"_");
+            Log.e("data1",alertModelList.get(0).getDetails()+"_"+alertModelList.get(0).getAlert_state());
+            Log.e("data2",alertModelList.get(1).getDetails()+"_"+alertModelList.get(1).getAlert_state());
+
+        }catch (Exception e){}
 
         if (alertModelList.size()>0)
         {
+
+
             for (AlertModel alertModel:alertModelList)
             {
                 Calendar calendarTime = Calendar.getInstance();
+                calendarTime.setTimeInMillis(System.currentTimeMillis());
+                calendarTime.clear();
+
                 Calendar calendarDate = Calendar.getInstance();
+                calendarDate.setTimeInMillis(System.currentTimeMillis());
+                calendarDate.clear();
                 calendarTime.setTimeInMillis(alertModel.getTime());
                 calendarDate.setTimeInMillis(alertModel.getDate());
 
@@ -95,14 +137,32 @@ public class AlertManager implements DatabaseInteraction {
                 calendar.set(Calendar.HOUR_OF_DAY,calendarTime.get(Calendar.HOUR_OF_DAY));
                 calendar.set(Calendar.MINUTE,calendarTime.get(Calendar.MINUTE));
 
+
                 startAlarm(calendar.getTimeInMillis());
+
+
             }
         }
 
     }
 
     @Override
+    public void displayAlertsByOnline(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
     public void displayAllAlerts(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
+    public void displayAllDeletedAlerts(List<DeletedAlerts> deletedAlertsList) {
+
+    }
+
+    @Override
+    public void onDeleteSuccess() {
 
     }
 }

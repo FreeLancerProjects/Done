@@ -26,6 +26,7 @@ import com.technology.circles.apps.done.language.LanguageHelper;
 import com.technology.circles.apps.done.local_database.AlertModel;
 import com.technology.circles.apps.done.local_database.DataBaseActions;
 import com.technology.circles.apps.done.local_database.DatabaseInteraction;
+import com.technology.circles.apps.done.local_database.DeletedAlerts;
 import com.technology.circles.apps.done.models.SingleAlertModel;
 import com.technology.circles.apps.done.models.UserModel;
 import com.technology.circles.apps.done.preferences.Preferences;
@@ -430,10 +431,24 @@ public class NoteDetailsActivity extends AppCompatActivity implements Listeners.
     }
 
     @Override
+    public void displayAlertsByOnline(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
     public void displayAllAlerts(List<AlertModel> alertModelList) {
 
     }
 
+    @Override
+    public void displayAllDeletedAlerts(List<DeletedAlerts> deletedAlertsList) {
+
+    }
+
+    @Override
+    public void onDeleteSuccess() {
+
+    }
 
 
     @Override

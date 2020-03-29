@@ -59,6 +59,7 @@
                             />
 
                         <FrameLayout
+                            android:id="@+id/flNotification"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_marginStart="16dp"
@@ -74,6 +75,8 @@
                                 android:tint="@color/white"
                                 android:layout_gravity="center"
                                 android:padding="3dp"
+                                android:clickable="false"
+                                android:longClickable="false"
                                 />
                             <TextView
                                 android:id="@+id/tvCount"
@@ -85,6 +88,8 @@
                                 android:singleLine="true"
                                 android:textSize="9sp"
                                 android:text="@{String.valueOf(count)}"
+                                android:clickable="false"
+                                android:longClickable="false"
                                 />
 
                         </FrameLayout>

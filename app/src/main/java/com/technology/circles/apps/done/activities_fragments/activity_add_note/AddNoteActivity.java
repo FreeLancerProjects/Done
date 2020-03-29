@@ -38,6 +38,7 @@ import com.technology.circles.apps.done.language.LanguageHelper;
 import com.technology.circles.apps.done.local_database.AlertModel;
 import com.technology.circles.apps.done.local_database.DataBaseActions;
 import com.technology.circles.apps.done.local_database.DatabaseInteraction;
+import com.technology.circles.apps.done.local_database.DeletedAlerts;
 import com.technology.circles.apps.done.models.AddAlertModel;
 import com.technology.circles.apps.done.models.UserModel;
 import com.technology.circles.apps.done.preferences.Preferences;
@@ -438,22 +439,24 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         alertModel.setAlert_time(time);
         alertModel.setAlert_state(0);
         alertModel.setAudio_path(model.getSound_path());
-        dataBaseActions.insert(alertModel);
 
-        AlertManager manager = new AlertManager(this);
-        manager.reStartAlarm();
-
-
-        finish();
-        /*if (alertModel.getIs_sound()==1)
+        if (alertModel.getIs_sound()==1)
         {
             saveOnlineWithSound(alertModel);
         }else
             {
                 saveOnlineWithoutSound(alertModel);
 
-            }*/
+            }
 
+    }
+
+    private void insertNewAlert(AlertModel alertModel) {
+
+        dataBaseActions.insert(alertModel);
+
+        AlertManager manager = new AlertManager(this);
+        manager.startNewAlarm(alertModel);
     }
 
     private void saveOnlineWithSound(AlertModel alertModel)
@@ -484,11 +487,14 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         dialog.dismiss();
                         if (response.isSuccessful()) {
-
+                            alertModel.setIsOnline(1);
+                            insertNewAlert(alertModel);
                             setResult(RESULT_OK);
                             finish();
                         } else {
 
+                            alertModel.setIsOnline(0);
+                            insertNewAlert(alertModel);
                             setResult(RESULT_OK);
                             finish();
 
@@ -510,7 +516,8 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         try {
                             dialog.dismiss();
-
+                            alertModel.setIsOnline(0);
+                            insertNewAlert(alertModel);
                             setResult(RESULT_OK);
                             finish();
                             if (t.getMessage() != null) {
@@ -529,7 +536,8 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                 });
     }
 
-    private void saveOnlineWithoutSound(AlertModel alertModel) {
+    private void saveOnlineWithoutSound(AlertModel alertModel)
+    {
 
         ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
         dialog.setCancelable(false);
@@ -555,10 +563,14 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                         dialog.dismiss();
                         if (response.isSuccessful()) {
 
+                            alertModel.setIsOnline(1);
+                            insertNewAlert(alertModel);
                             setResult(RESULT_OK);
                             finish();
                         } else {
 
+                            alertModel.setIsOnline(0);
+                            insertNewAlert(alertModel);
                             setResult(RESULT_OK);
                             finish();
 
@@ -580,7 +592,8 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         try {
                             dialog.dismiss();
-
+                            alertModel.setIsOnline(0);
+                            insertNewAlert(alertModel);
                             setResult(RESULT_OK);
                             finish();
                             if (t.getMessage() != null) {
@@ -600,7 +613,8 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     }
 
-    private void initRecorder() {
+    private void initRecorder()
+    {
 
         Calendar calendar = Calendar.getInstance();
         binding.cardView.setVisibility(View.GONE);
@@ -899,8 +913,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     @Override
     public void insertedSuccess() {
-        File file = new File(model.getSound_path());
-        //FileOutputStream outputStream = new FileOutputStream()
+
     }
 
     @Override
@@ -919,7 +932,22 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     }
 
     @Override
+    public void displayAlertsByOnline(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
     public void displayAllAlerts(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
+    public void displayAllDeletedAlerts(List<DeletedAlerts> deletedAlertsList) {
+
+    }
+
+    @Override
+    public void onDeleteSuccess() {
 
     }
 

@@ -3,6 +3,8 @@ package com.technology.circles.apps.done.services;
 
 import com.technology.circles.apps.done.models.AppDataModel;
 import com.technology.circles.apps.done.models.MyAlertModel;
+import com.technology.circles.apps.done.models.NotificationCount;
+import com.technology.circles.apps.done.models.NotificationDataModel;
 import com.technology.circles.apps.done.models.SingleAlertModel;
 import com.technology.circles.apps.done.models.UserModel;
 
@@ -20,8 +22,8 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface Service {
-    @GET("api/settings")
-    Call<AppDataModel> getSetting(@Header("lang") String lang);
+    @GET("api/setting")
+    Call<AppDataModel> getSetting(@Header("device-lang") String lang);
 
     @FormUrlEncoded
     @POST("api/user-register")
@@ -91,6 +93,26 @@ public interface Service {
     Call<SingleAlertModel> getSingleAlert(@Header("Authorization") String user_token,
                                           @Query("local_id") String local_id
     );
+
+
+    @GET("api/my-notifications")
+    Call<NotificationDataModel> getNotification(@Header("lang") String header,
+                                                @Header("Authorization") String user_token,
+                                                @Query("page") int page,
+                                                @Query("limit_per_page") int limit_per_page);
+
+    @GET("api/unread-notifications")
+    Call<NotificationCount> getUnreadNotificationCount(@Header("lang") String header,
+                                                       @Header("Authorization") String userToken);
+
+    @GET("api/read-notifications")
+    Call<ResponseBody> readNotification(@Header("Authorization") String userToken);
+
+
+    @FormUrlEncoded
+    @POST("api/alert/delete")
+    Call<ResponseBody> delete(@Header("Authorization") String user_token,
+                              @Field("local_id") String local_id);
 
 }
 

@@ -12,6 +12,7 @@ import com.technology.circles.apps.done.activities_fragments.activity_inner_call
 import com.technology.circles.apps.done.local_database.AlertModel;
 import com.technology.circles.apps.done.local_database.DataBaseActions;
 import com.technology.circles.apps.done.local_database.DatabaseInteraction;
+import com.technology.circles.apps.done.local_database.DeletedAlerts;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,7 +102,22 @@ public class AlarmBroadcast extends BroadcastReceiver implements DatabaseInterac
     }
 
     @Override
+    public void displayAlertsByOnline(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
     public void displayAllAlerts(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
+    public void displayAllDeletedAlerts(List<DeletedAlerts> deletedAlertsList) {
+
+    }
+
+    @Override
+    public void onDeleteSuccess() {
 
     }
 

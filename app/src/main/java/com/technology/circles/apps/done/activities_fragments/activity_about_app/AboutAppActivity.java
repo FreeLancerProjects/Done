@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -89,6 +90,7 @@ public class AboutAppActivity extends AppCompatActivity implements Listeners.Bac
                 .enqueue(new Callback<AppDataModel>() {
                     @Override
                     public void onResponse(Call<AppDataModel> call, Response<AppDataModel> response) {
+                        binding.progBar.setVisibility(View.GONE);
                         if (response.isSuccessful() && response.body() != null) {
                             if (lang.equals("ar"))
                             {
@@ -132,6 +134,8 @@ public class AboutAppActivity extends AppCompatActivity implements Listeners.Bac
                     @Override
                     public void onFailure(Call<AppDataModel> call, Throwable t) {
                         try {
+                            binding.progBar.setVisibility(View.GONE);
+
                             if (t.getMessage() != null) {
                                 Log.e("error", t.getMessage());
                                 if (t.getMessage().toLowerCase().contains("failed to connect") || t.getMessage().toLowerCase().contains("unable to resolve host")) {

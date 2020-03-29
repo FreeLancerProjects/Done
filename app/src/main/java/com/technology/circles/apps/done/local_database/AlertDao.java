@@ -30,9 +30,22 @@ public interface AlertDao {
     @Query("SELECT * FROM alerts_table WHERE alert_state =:type ORDER BY id ASC")
     List<AlertModel> getAllAlertsByState(int type);
 
+    @Query("SELECT * FROM alerts_table WHERE isOnline =:state ORDER BY id ASC")
+    List<AlertModel> getAllAlertsByOnline(int state);
+
     @Query("SELECT * FROM alerts_table")
     List<AlertModel> getAllAlertsData();
 
     @Insert
     void insertAllData(List<AlertModel> alertModel);
+
+    @Insert
+    void insertDeletedAlert(DeletedAlerts deletedAlerts);
+
+    @Query("SELECT * FROM deleted_alerts")
+    List<DeletedAlerts> displayDeletedAlerts();
+
+    @Query("DELETE FROM deleted_alerts")
+    void deleteAllDeletedAlert();
+
 }

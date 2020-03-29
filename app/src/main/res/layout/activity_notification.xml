@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+
+        <variable
+            name="lang"
+            type="String" />
+
+        <variable
+            name="backListener"
+            type="com.technology.circles.apps.done.interfaces.Listeners.BackListener" />
+        <variable
+            name="model"
+            type="com.technology.circles.apps.done.models.AddAlertModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activities_fragments.activity_notification.NotificationActivity"
+        android:orientation="vertical"
+        >
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_gradient">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:onClick="@{()->backListener.back()}"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    android:padding="5dp"
+                    android:rotation='@{lang.equals("ar")?180:0}'
+                    android:src="@drawable/ic_left_arrow"
+                    android:tint="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    android:text="@string/back"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <ProgressBar
+                android:id="@+id/progBar"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+
+                />
+            <TextView
+                android:id="@+id/tvNoNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_gravity="center"
+                android:text="@string/no_notifications_to_show"
+                android:visibility="gone"
+                />
+        </FrameLayout>
+    </LinearLayout>
+</layout>

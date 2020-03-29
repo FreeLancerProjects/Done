@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="model"
+            type="com.technology.circles.apps.done.models.NotificationDataModel.NotificationModel" />
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentPadding="8dp"
+        app:cardElevation="3dp"
+        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="@color/white"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <FrameLayout
+                android:id="@+id/fl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                >
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/user_avatar"
+                    endPoint="@{model.from_user.logo}"
+
+                    />
+
+            </FrameLayout>
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="13sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/fl"
+                app:layout_constraintEnd_toStartOf="@id/tvDate"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text='@{model.from_user.name}'
+                android:maxLines="2"
+                android:ellipsize="end"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintWidth_default="wrap"
+                />
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/mdtp_light_gray"
+                android:textSize="13sp"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                app:layout_constraintStart_toEndOf="@id/fl"
+                app:layout_constraintEnd_toStartOf="@id/btnRefuse"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/new_alert"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginTop="10dp"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintWidth_default="wrap"
+                />
+
+            <Button
+                android:id="@+id/btnAccept"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/rounded"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:text="@string/accept"
+                android:textAllCaps="false"
+                />
+
+            <Button
+                android:id="@+id/btnRefuse"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btnAccept"
+                android:background="@drawable/rounded_refuse"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:text="@string/refuse"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAllCaps="false"
+                />
+
+
+
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:lines="2"
+                android:ellipsize="end"
+                android:gravity="center"
+                notification_date ="@{model.created_at}"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

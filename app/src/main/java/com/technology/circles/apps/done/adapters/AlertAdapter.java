@@ -83,11 +83,11 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertAdapter.Holder> {
             if (fragment instanceof Fragment_Public)
             {
                 Fragment_Public fragment_public = (Fragment_Public) fragment;
-                fragment_public.delete(model2);
+                fragment_public.delete(holder.getAdapterPosition(),model2);
             }else if (fragment instanceof Fragment_Private)
             {
                 Fragment_Private fragment_private = (Fragment_Private) fragment;
-                fragment_private.delete(model2);
+                fragment_private.delete(holder.getAdapterPosition(),model2);
 
             }
         });

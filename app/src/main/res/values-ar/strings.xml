@@ -100,5 +100,13 @@
     <string name="sync_data">مزامنة البيانات...</string>
     <string name="download">تنزيل</string>
     <string name="downloading">جار التنزيل...</string>
+    <string name="uploading">جار تحديث البيانات...</string>
+    <string name="create_pass">برجاء إنشاء كلمة مرور</string>
+    <string name="inc_pas">كلمة المرور غير صحيحة</string>
+    <string name="no_notifications_to_show">لا توجد إشعارات لعرضها</string>
+    <string name="new_alert">تنبية جديد</string>
+    <string name="accept">موافقة</string>
+    <string name="refuse">رفض</string>
+    <string name="deleting">جار الحذف...</string>
 
 </resources>

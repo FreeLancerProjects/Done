@@ -59,6 +59,11 @@ public class DataBaseActions {
 
         new DisplayAlertByStateAsyncTask().execute(state);
     }
+    public void displayAlertByOnline(int state)
+    {
+
+        new DisplayAlertByOnlineAsyncTask().execute(state);
+    }
 
     public void displayAllAlert()
     {
@@ -71,6 +76,23 @@ public class DataBaseActions {
 
         new InsertAllAlertAsyncTask().execute(alertModelList);
     }
+
+
+    public void insertDeletedAlert(DeletedAlerts deletedAlerts)
+    {
+        new InsertDeletedAlertAsyncTask().execute(deletedAlerts);
+    }
+
+    public void deleteAllDeletedAlert()
+    {
+        new DeleteAllDeletedAlertAsyncTask().execute();
+    }
+
+    public void displayAllDeletedAlert()
+    {
+        new DisplayAllDeletedAlertAsyncTask().execute();
+    }
+
 
     private class InsertAsyncTask extends AsyncTask<AlertModel,Void,Long> {
 
@@ -98,9 +120,14 @@ public class DataBaseActions {
         @Override
         protected Void doInBackground(AlertModel... alertModels) {
             dao.delete(alertModels[0]);
-            getAllAlertByType(0);
-            getAllAlertByType(1);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            interaction.onDeleteSuccess();
+
         }
     }
 
@@ -149,6 +176,22 @@ public class DataBaseActions {
     }
 
 
+    private class DisplayAlertByOnlineAsyncTask extends AsyncTask<Integer,Void,List<AlertModel>>{
+
+        @Override
+        protected List<AlertModel> doInBackground(Integer... integers) {
+            List<AlertModel>  data= dao.getAllAlertsByOnline(integers[0]);
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(List<AlertModel> alertModelList) {
+            super.onPostExecute(alertModelList);
+            interaction.displayAlertsByOnline(alertModelList);
+
+        }
+    }
+
     private class DisplayAlertByStateAsyncTask extends AsyncTask<Integer,Void,List<AlertModel>>{
 
         @Override
@@ -164,6 +207,7 @@ public class DataBaseActions {
 
         }
     }
+
 
     private class DisplayAllAlertAsyncTask extends AsyncTask<Void,Void,List<AlertModel>>{
 
@@ -191,5 +235,44 @@ public class DataBaseActions {
         }
     }
 
+
+    private class InsertDeletedAlertAsyncTask extends AsyncTask<DeletedAlerts,Void,Void>{
+
+        @Override
+        protected Void doInBackground(DeletedAlerts... deletedAlerts) {
+            dao.insertDeletedAlert(deletedAlerts[0]);
+            return null;
+        }
+    }
+
+    private class DeleteAllDeletedAlertAsyncTask extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            dao.deleteAllDeletedAlert();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            interaction.onDeleteSuccess();
+        }
+    }
+
+    private class DisplayAllDeletedAlertAsyncTask extends AsyncTask<Void,Void,List<DeletedAlerts>>{
+
+        @Override
+        protected List<DeletedAlerts> doInBackground(Void... voids) {
+            List<DeletedAlerts> list = dao.displayDeletedAlerts();
+            return list;
+        }
+
+        @Override
+        protected void onPostExecute(List<DeletedAlerts> deletedAlertsList) {
+            super.onPostExecute(deletedAlertsList);
+            interaction.displayAllDeletedAlerts(deletedAlertsList);
+        }
+    }
 
 }

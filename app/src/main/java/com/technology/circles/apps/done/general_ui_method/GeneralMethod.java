@@ -101,6 +101,18 @@ public class GeneralMethod {
         textView.setText(t);
     }
 
+    @BindingAdapter("notification_date")
+    public static void notificationDate(TextView textView,String date)
+    {
+        if (date!=null&&!date.isEmpty())
+        {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMM/yyyy hh:mm aa",Locale.ENGLISH);
+
+            String d = dateFormat.format(new Date(Long.parseLong(date)*1000));
+            textView.setText(d);
+        }
+
+    }
 
 
 

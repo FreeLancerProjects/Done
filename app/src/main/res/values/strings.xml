@@ -94,6 +94,14 @@
     <string name="sync_data">Sync Data...</string>
     <string name="download">Download</string>
     <string name="downloading">Downloading...</string>
+    <string name="uploading">Uploading...</string>
+    <string name="create_pass">Create password</string>
+    <string name="inc_pas">Incorrect Password</string>
+    <string name="no_notifications_to_show">No notifications to show</string>
+    <string name="new_alert">New Alert</string>
+    <string name="accept">Accept</string>
+    <string name="refuse">Refuse</string>
+    <string name="deleting">Deleting...</string>
 
 
 </resources>

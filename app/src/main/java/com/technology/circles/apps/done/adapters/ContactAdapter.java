@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.technology.circles.apps.done.R;
+import com.technology.circles.apps.done.activities_fragments.activity_contact.ContactsActivity;
 import com.technology.circles.apps.done.databinding.ContactRowBinding;
 import com.technology.circles.apps.done.models.ContactModel;
 
@@ -22,10 +23,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Holder> 
     private Context context;
     private LayoutInflater inflater;
     private String lang;
+    private ContactsActivity activity;
 
     public ContactAdapter(List<ContactModel> list, Context context) {
         this.list = list;
         this.context = context;
+        this.activity = (ContactsActivity) context;
         inflater = LayoutInflater.from(context);
         Paper.init(context);
         lang = Paper.book().read("lang","ar");
@@ -43,6 +46,9 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.Holder> 
     public void onBindViewHolder(@NonNull ContactAdapter.Holder holder, int position) {
         holder.binding.setLang(lang);
         holder.binding.setModel(list.get(position));
+        holder.itemView.setOnClickListener(view -> {
+            activity.setItemData(list.get(holder.getAdapterPosition()));
+        });
     }
 
     @Override

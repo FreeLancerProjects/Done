@@ -86,6 +86,10 @@ public class NotificationDataModel implements Serializable {
             return created_at;
         }
 
+        public void setAction_type(String action_type) {
+            this.action_type = action_type;
+        }
+
         public Word getWord() {
             return word;
         }

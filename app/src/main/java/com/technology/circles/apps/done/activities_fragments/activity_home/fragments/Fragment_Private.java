@@ -95,7 +95,6 @@ public class Fragment_Private extends Fragment implements DatabaseInteraction {
 
     private void deleteByLocalId(AlertModel model)
     {
-        Log.e("deled_id",model.getAlert_id());
         ProgressDialog dialog = Common.createProgressDialog(activity,getString(R.string.wait));
         dialog.setCancelable(false);
         dialog.show();

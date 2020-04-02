@@ -48,4 +48,7 @@ public interface AlertDao {
     @Query("DELETE FROM deleted_alerts")
     void deleteAllDeletedAlert();
 
+    @Query("DELETE FROM alerts_table")
+    void deleteAllAlert();
+
 }

@@ -6,7 +6,7 @@
         <variable
             name="model"
             type="com.technology.circles.apps.done.models.NotificationDataModel.NotificationModel" />
-
+        <import type="android.view.View"/>
     </data>
 
     <androidx.cardview.widget.CardView
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/fl"
                 app:layout_constraintEnd_toStartOf="@id/tvDate"
@@ -76,9 +76,10 @@
                 android:text="@string/new_alert"
                 android:maxLines="2"
                 android:ellipsize="end"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintWidth_default="wrap"
+
                 />
 
             <Button
@@ -89,9 +90,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:background="@drawable/rounded"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:text="@string/accept"
                 android:textAllCaps="false"
+                android:visibility='@{model.action_type.equals("1")?View.VISIBLE:View.GONE,default=gone}'
+
+
                 />
 
             <Button
@@ -102,11 +106,12 @@
                 app:layout_constraintEnd_toStartOf="@id/btnAccept"
                 android:background="@drawable/rounded_refuse"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:text="@string/refuse"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:textAllCaps="false"
+                android:visibility='@{model.action_type.equals("1")?View.VISIBLE:View.GONE,default=gone}'
                 />
 
 
@@ -118,7 +123,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="12sp"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvTitle"
+                app:layout_constraintBottom_toBottomOf="@id/tvTitle"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:lines="2"
                 android:ellipsize="end"

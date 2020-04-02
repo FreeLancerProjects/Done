@@ -22,6 +22,10 @@ import com.technology.circles.apps.done.activities_fragments.activity_setting.Se
 import com.technology.circles.apps.done.adapters.ViewPagerAdapter;
 import com.technology.circles.apps.done.databinding.ActivityHomeBinding;
 import com.technology.circles.apps.done.language.LanguageHelper;
+import com.technology.circles.apps.done.local_database.AlertModel;
+import com.technology.circles.apps.done.local_database.DataBaseActions;
+import com.technology.circles.apps.done.local_database.DatabaseInteraction;
+import com.technology.circles.apps.done.local_database.DeletedAlerts;
 import com.technology.circles.apps.done.models.NotificationCount;
 import com.technology.circles.apps.done.models.UserModel;
 import com.technology.circles.apps.done.preferences.Preferences;
@@ -38,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity  {
+public class HomeActivity extends AppCompatActivity  implements DatabaseInteraction {
 
     private ActivityHomeBinding binding;
     private String lang;
@@ -47,6 +51,7 @@ public class HomeActivity extends AppCompatActivity  {
     private ViewPagerAdapter adapter;
     private Preferences preferences;
     private UserModel userModel;
+    private DataBaseActions dataBaseActions;
 
 
     @Override
@@ -64,6 +69,8 @@ public class HomeActivity extends AppCompatActivity  {
     }
 
     private void initView() {
+        dataBaseActions = new DataBaseActions(this);
+        dataBaseActions.setInteraction(this);
         preferences = Preferences.newInstance();
         userModel = preferences.getUserData(this);
         fragmentList = new ArrayList<>();
@@ -99,7 +106,7 @@ public class HomeActivity extends AppCompatActivity  {
 
         binding.flNotification.setOnClickListener(view -> {
             Intent intent = new Intent(this, NotificationActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent,300);
             readNotification();
         });
 
@@ -221,10 +228,23 @@ public class HomeActivity extends AppCompatActivity  {
             fragment_private.getAlerts();
         }else if (requestCode ==200&&resultCode==RESULT_OK)
         {
-            preferences.clear(this);
-            userModel = null;
-            navigateToSignInActivity();
+            logout();
+        }else if (requestCode ==300&&resultCode==RESULT_OK)
+        {
+            Fragment_Public fragment_public = (Fragment_Public) adapter.getItem(0);
+            Fragment_Private fragment_private = (Fragment_Private) adapter.getItem(1);
+            fragment_public.getAlerts();
+            fragment_private.getAlerts();
         }
+    }
+
+    private void logout() {
+        dataBaseActions.deleteAllAlert();
+        dataBaseActions.deleteAllDeletedAlert();
+        preferences.clear(this);
+        userModel = null;
+        navigateToSignInActivity();
+
     }
 
     private void navigateToSignInActivity() {
@@ -234,7 +254,43 @@ public class HomeActivity extends AppCompatActivity  {
     }
 
 
+    @Override
+    public void insertedSuccess() {
 
+    }
 
+    @Override
+    public void displayData(List<AlertModel> alertModelList) {
 
+    }
+
+    @Override
+    public void displayByTime(AlertModel alertModel) {
+
+    }
+
+    @Override
+    public void displayAlertsByState(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
+    public void displayAlertsByOnline(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
+    public void displayAllAlerts(List<AlertModel> alertModelList) {
+
+    }
+
+    @Override
+    public void displayAllDeletedAlerts(List<DeletedAlerts> deletedAlertsList) {
+
+    }
+
+    @Override
+    public void onDeleteSuccess() {
+
+    }
 }

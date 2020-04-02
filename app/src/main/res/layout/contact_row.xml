@@ -9,6 +9,7 @@
         <variable
             name="model"
             type="com.technology.circles.apps.done.models.ContactModel" />
+        <import type="android.view.View"/>
     </data>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -35,6 +36,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                endPoint="@{model.image}"
                 />
             <TextView
                 android:id="@+id/tvName"
@@ -46,7 +48,7 @@
                 android:textSize="16sp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                app:layout_constraintEnd_toStartOf="@id/imageShare"
+                app:layout_constraintEnd_toStartOf="@id/logo"
                 android:text="@{model.name}"
 
                 />
@@ -78,7 +80,21 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:padding="8dp"
-
+                android:visibility='@{model.useApp?View.VISIBLE:View.GONE,default=gone}'
+                />
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/logo"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/imageShare"
+                app:riv_mutate_background="true"
+                android:background="@color/second"
+                app:riv_corner_radius="17dp"
+                android:src="@drawable/done_logo"
+                android:padding="2dp"
+                android:visibility='@{model.useApp?View.VISIBLE:View.GONE,default=gone}'
 
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>

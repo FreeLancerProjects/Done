@@ -61,6 +61,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             holder1.binding.setModel(model);
 
+            holder1.binding.btnAccept.setOnClickListener(view -> {
+                NotificationDataModel.NotificationModel model1 = list.get(holder1.getAdapterPosition());
+
+                activity.setItemAccept(model1,holder1.getAdapterPosition());
+            });
+
+            holder1.binding.btnRefuse.setOnClickListener(view -> {
+                NotificationDataModel.NotificationModel model1 = list.get(holder1.getAdapterPosition());
+
+                activity.setItemRefuse(model1,holder1.getAdapterPosition());
+            });
 
 
 

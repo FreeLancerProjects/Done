@@ -5,13 +5,16 @@ import com.technology.circles.apps.done.models.AppDataModel;
 import com.technology.circles.apps.done.models.MyAlertModel;
 import com.technology.circles.apps.done.models.NotificationCount;
 import com.technology.circles.apps.done.models.NotificationDataModel;
+import com.technology.circles.apps.done.models.ShareModel;
 import com.technology.circles.apps.done.models.SingleAlertModel;
 import com.technology.circles.apps.done.models.UserModel;
+import com.technology.circles.apps.done.models.UsersDataModel;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -113,6 +116,24 @@ public interface Service {
     @POST("api/alert/delete")
     Call<ResponseBody> delete(@Header("Authorization") String user_token,
                               @Field("local_id") String local_id);
+
+    @FormUrlEncoded
+    @POST("api/share-action")
+    Call<SingleAlertModel> acceptRefuseAlerts(@Header("Authorization") String user_token,
+                                          @Field("notification_id") String notification_id,
+                                          @Field("from_user_id") String from_user_id,
+                                          @Field("action") String action,
+                                          @Field("process_id_fk") String process_id_fk
+    );
+
+    @GET("api/user/show")
+    Call<UsersDataModel> getAllUsers(@Header("Authorization")String user_token);
+
+    @POST("api/alert/share")
+    Call<ResponseBody> shareContacts(@Header("Authorization")String user_token,
+                                     @Body ShareModel shareModel
+                                     );
+
 
 }
 

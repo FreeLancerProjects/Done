@@ -102,6 +102,7 @@
     <string name="accept">Accept</string>
     <string name="refuse">Refuse</string>
     <string name="deleting">Deleting...</string>
+    <string name="user_not_use_app">This user don\'t use done app</string>
 
 
 </resources>

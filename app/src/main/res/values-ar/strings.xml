@@ -108,5 +108,6 @@
     <string name="accept">موافقة</string>
     <string name="refuse">رفض</string>
     <string name="deleting">جار الحذف...</string>
+    <string name="user_not_use_app">هذا المستخدم لايستخدم هذا التطبيق</string>
 
 </resources>

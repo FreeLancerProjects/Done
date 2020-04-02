@@ -88,6 +88,11 @@ public class DataBaseActions {
         new DeleteAllDeletedAlertAsyncTask().execute();
     }
 
+    public void deleteAllAlert()
+    {
+        new DeleteAllAlertAsyncTask().execute();
+    }
+
     public void displayAllDeletedAlert()
     {
         new DisplayAllDeletedAlertAsyncTask().execute();
@@ -274,5 +279,18 @@ public class DataBaseActions {
             interaction.displayAllDeletedAlerts(deletedAlertsList);
         }
     }
+
+    private class DeleteAllAlertAsyncTask extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            dao.deleteAllAlert();
+            return null;
+        }
+
+
+    }
+
+
 
 }

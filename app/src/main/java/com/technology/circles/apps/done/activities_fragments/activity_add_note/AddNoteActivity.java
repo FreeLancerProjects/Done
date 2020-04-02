@@ -21,6 +21,7 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -40,6 +41,8 @@ import com.technology.circles.apps.done.local_database.DataBaseActions;
 import com.technology.circles.apps.done.local_database.DatabaseInteraction;
 import com.technology.circles.apps.done.local_database.DeletedAlerts;
 import com.technology.circles.apps.done.models.AddAlertModel;
+import com.technology.circles.apps.done.models.ContactModel;
+import com.technology.circles.apps.done.models.ShareModel;
 import com.technology.circles.apps.done.models.UserModel;
 import com.technology.circles.apps.done.preferences.Preferences;
 import com.technology.circles.apps.done.remote.Api;
@@ -51,6 +54,7 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +95,8 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     private DataBaseActions dataBaseActions;
     private Preferences preferences;
     private UserModel userModel;
+    private AlertModel alertModel;
+    private ContactModel contactModel;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -159,8 +165,6 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
             }
         });
-
-
         binding.imageMic.setOnTouchListener((view, motionEvent) -> {
 
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -199,7 +203,6 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
             return true;
         });
-
         binding.changeTime.setOnClickListener(view -> {
 
             try {
@@ -267,7 +270,25 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
         });
         binding.btnSaveShare.setOnClickListener(view -> {
-            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            if (model.isDataValid(this)) {
+                Common.CloseKeyBoard(this, binding.edtDetails);
+
+
+                if (model.getAlert_type() == Tags.PRIVATE_ALERT) {
+                    if (preferences.getPassword(this) == null || preferences.getPassword(this).isEmpty()) {
+                        createPasswordDialogAlert();
+                    } else {
+                        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+                    }
+                } else {
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+                }
+            }
+
+
         });
 
         btnSocial.setOnClickListener(view -> {
@@ -283,8 +304,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
             new Handler()
                     .postDelayed(() -> {
-                        Intent intent = new Intent(this, ContactsActivity.class);
-                        startActivity(intent);
+                       save(1);
                     }, 500);
 
         });
@@ -376,11 +396,11 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                     if (preferences.getPassword(this) == null || preferences.getPassword(this).isEmpty()) {
                         createPasswordDialogAlert();
                     } else {
-                        save();
+                        save(0);
 
                     }
                 } else {
-                    save();
+                    save(0);
 
                 }
             }
@@ -388,7 +408,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
     }
 
-    private void save() {
+    private void save(int share) {
 
         int alert = 0;
         int in_call = 0;
@@ -409,7 +429,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         }
 
 
-        AlertModel alertModel = new AlertModel(UUID.randomUUID().toString(),model.getTime(), model.getDate(), model.getAlert_type(), alert, in_call, out_call, 0, model.getDetails());
+        alertModel = new AlertModel(UUID.randomUUID().toString(),model.getTime(), model.getDate(), model.getAlert_type(), alert, in_call, out_call, 0, model.getDetails());
 
         if (!model.getSound_path().isEmpty()) {
             is_sound = 1;
@@ -440,18 +460,27 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         alertModel.setAlert_state(0);
         alertModel.setAudio_path(model.getSound_path());
 
-        if (alertModel.getIs_sound()==1)
+        if (share==0)
         {
-            saveOnlineWithSound(alertModel);
-        }else
+            if (alertModel.getIs_sound()==1)
             {
-                saveOnlineWithoutSound(alertModel);
+                saveOnlineWithSound(alertModel,share);
+            }else
+            {
+                saveOnlineWithoutSound(alertModel,share);
 
             }
+        }else if (share==1)
+            {
+                Intent intent = new Intent(this, ContactsActivity.class);
+                startActivityForResult(intent,100);
+            }
+
 
     }
 
-    private void insertNewAlert(AlertModel alertModel) {
+    private void insertNewAlert(AlertModel alertModel)
+    {
 
         dataBaseActions.insert(alertModel);
 
@@ -459,7 +488,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
         manager.startNewAlarm(alertModel);
     }
 
-    private void saveOnlineWithSound(AlertModel alertModel)
+    private void saveOnlineWithSound(AlertModel alertModel, int share)
     {
         ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
         dialog.setCancelable(false);
@@ -485,18 +514,34 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        dialog.dismiss();
                         if (response.isSuccessful()) {
                             alertModel.setIsOnline(1);
                             insertNewAlert(alertModel);
-                            setResult(RESULT_OK);
-                            finish();
+
+                            if (share==0)
+                            {
+                                dialog.dismiss();
+
+                                setResult(RESULT_OK);
+                                finish();
+                            }else if (share==1)
+                            {
+                                shareWithContacts(alertModel.getAlert_id(),dialog);
+                            }else if (share==2)
+                            {
+
+                            }
+
                         } else {
+
+
+                            dialog.dismiss();
 
                             alertModel.setIsOnline(0);
                             insertNewAlert(alertModel);
                             setResult(RESULT_OK);
                             finish();
+
 
                             if (response.code() == 500) {
                                 Toast.makeText(AddNoteActivity.this, "Server Error", Toast.LENGTH_SHORT).show();
@@ -516,12 +561,15 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         try {
                             dialog.dismiss();
+
                             alertModel.setIsOnline(0);
                             insertNewAlert(alertModel);
                             setResult(RESULT_OK);
                             finish();
+
+
                             if (t.getMessage() != null) {
-                                Log.e("msg_category_error", t.getMessage() + "__");
+                                Log.e("error", t.getMessage() + "__");
 
                                 if (t.getMessage().toLowerCase().contains("failed to connect") || t.getMessage().toLowerCase().contains("unable to resolve host")) {
                                     Toast.makeText(AddNoteActivity.this, getString(R.string.something), Toast.LENGTH_SHORT).show();
@@ -536,7 +584,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                 });
     }
 
-    private void saveOnlineWithoutSound(AlertModel alertModel)
+    private void saveOnlineWithoutSound(AlertModel alertModel, int share)
     {
 
         ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
@@ -565,8 +613,20 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
                             alertModel.setIsOnline(1);
                             insertNewAlert(alertModel);
-                            setResult(RESULT_OK);
-                            finish();
+
+                            if (share==0)
+                            {
+
+                                setResult(RESULT_OK);
+                                finish();
+                            }else if (share ==1)
+                            {
+                                shareWithContacts(alertModel.getAlert_id(), dialog);
+                            }else if (share ==2)
+                            {
+
+                            }
+
                         } else {
 
                             alertModel.setIsOnline(0);
@@ -611,6 +671,64 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                     }
                 });
 
+    }
+
+    private void shareWithContacts(String local_alert_id, ProgressDialog dialog) {
+        List<String> contactsIds = new ArrayList<>();
+        contactsIds.add(contactModel.getId());
+        ShareModel shareModel = new ShareModel(local_alert_id,contactsIds);
+        Api.getService(Tags.base_url)
+                .shareContacts(userModel.getToken(),shareModel)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        dialog.dismiss();
+
+                        if (response.isSuccessful())
+                        {
+                            setResult(RESULT_OK);
+                            finish();
+                        }else
+                            {
+                                try {
+                                    Log.e("error_share",response.code()+"_"+response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                setResult(RESULT_OK);
+                                finish();
+                                if (response.code() == 500)
+                                {
+                                    Toast.makeText(AddNoteActivity.this, "Server Error", Toast.LENGTH_SHORT).show();
+                                }else {
+                                    Toast.makeText(AddNoteActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                        try {
+                            dialog.dismiss();
+                            setResult(RESULT_OK);
+                            finish();
+                            if (t.getMessage() != null) {
+                                Log.e("error", t.getMessage() + "__");
+
+                                if (t.getMessage().toLowerCase().contains("failed to connect") || t.getMessage().toLowerCase().contains("unable to resolve host")) {
+                                    Toast.makeText(AddNoteActivity.this, getString(R.string.something), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(AddNoteActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (Exception e) {
+
+                        }
+
+                    }
+                });
     }
 
     private void initRecorder()
@@ -769,7 +887,7 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
                         preferences.create_update_password(this, password);
                         binding.edtPassword.setError(null);
                         Common.CloseKeyBoard(this, binding.edtPassword);
-                        save();
+                        save(0);
                         dialog.dismiss();
                     }
                 }
@@ -811,7 +929,6 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
 
     }
-
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
@@ -862,6 +979,23 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
 
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100&&resultCode==RESULT_OK&&data!=null)
+        {
+            contactModel = (ContactModel) data.getSerializableExtra("data");
+            if (alertModel.getIs_sound()==1)
+            {
+                saveOnlineWithSound(alertModel,1);
+            }else
+            {
+                saveOnlineWithoutSound(alertModel,1);
+
+            }
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == write_req && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
@@ -885,7 +1019,8 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed()
+    {
 
         if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -893,8 +1028,6 @@ public class AddNoteActivity extends AppCompatActivity implements Listeners.Back
             back();
         }
     }
-
-
 
     @Override
     protected void onDestroy() {

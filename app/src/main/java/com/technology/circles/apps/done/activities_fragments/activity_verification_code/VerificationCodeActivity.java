@@ -97,7 +97,6 @@ public class VerificationCodeActivity extends AppCompatActivity {
         });
         sendSmsCode();
 
-
     }
 
 

@@ -45,7 +45,7 @@ public class VerificationCodeActivity extends AppCompatActivity {
     private CountDownTimer timer;
     private FirebaseAuth mAuth;
     private String verificationId;
-    private String smsCode ;
+    private String smsCode;
     private Preferences preferences;
 
 
@@ -65,8 +65,7 @@ public class VerificationCodeActivity extends AppCompatActivity {
 
     private void getDataFromIntent() {
         Intent intent = getIntent();
-        if (intent!=null)
-        {
+        if (intent != null) {
             phone_code = intent.getStringExtra("phone_code");
             phone = intent.getStringExtra("phone");
 
@@ -80,26 +79,22 @@ public class VerificationCodeActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_verification_code);
         Paper.init(this);
         lang = Paper.book().read("lang", "ar");
-        binding.tvResendCode.setOnClickListener(view ->sendSmsCode());
+        binding.tvResendCode.setOnClickListener(view -> sendSmsCode());
 
         binding.btnConfirm.setOnClickListener(view -> {
             String code = binding.edtCode.getText().toString().trim();
-            if (!code.isEmpty())
-            {
+            if (!code.isEmpty()) {
                 binding.edtCode.setError(null);
-                Common.CloseKeyBoard(this,binding.edtCode);
+                Common.CloseKeyBoard(this, binding.edtCode);
                 checkValidCode(code);
-            }else
-                {
-                   binding.edtCode.setError(getString(R.string.field_required));
-                }
+            } else {
+                binding.edtCode.setError(getString(R.string.field_required));
+            }
 
         });
         sendSmsCode();
 
     }
-
-
 
 
     private void sendSmsCode() {
@@ -113,6 +108,7 @@ public class VerificationCodeActivity extends AppCompatActivity {
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
 
                 smsCode = phoneAuthCredential.getSmsCode();
+                binding.edtCode.setText(smsCode);
                 checkValidCode(smsCode);
             }
 
@@ -126,19 +122,17 @@ public class VerificationCodeActivity extends AppCompatActivity {
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
 
-                if (e.getMessage()!=null)
-                {
-                    Common.CreateDialogAlert(VerificationCodeActivity.this,e.getMessage());
-                }else
-                    {
-                        Common.CreateDialogAlert(VerificationCodeActivity.this,getString(R.string.failed));
+                if (e.getMessage() != null) {
+                    Common.CreateDialogAlert(VerificationCodeActivity.this, e.getMessage());
+                } else {
+                    Common.CreateDialogAlert(VerificationCodeActivity.this, getString(R.string.failed));
 
-                    }
+                }
             }
         };
         PhoneAuthProvider.getInstance()
                 .verifyPhoneNumber(
-                        phone_code+phone,
+                        phone_code + phone,
                         60,
                         TimeUnit.SECONDS,
                         this,
@@ -151,7 +145,7 @@ public class VerificationCodeActivity extends AppCompatActivity {
 
     private void startTimer() {
         binding.tvResendCode.setEnabled(false);
-        timer = new CountDownTimer(60*1000,  1000) {
+        timer = new CountDownTimer(60 * 1000, 1000) {
             @Override
             public void onTick(long l) {
                 SimpleDateFormat format = new SimpleDateFormat("mm:ss", Locale.ENGLISH);
@@ -172,53 +166,45 @@ public class VerificationCodeActivity extends AppCompatActivity {
 
     private void checkValidCode(String code) {
 
-        if (verificationId!=null)
-        {
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId,code);
+        if (verificationId != null) {
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
             mAuth.signInWithCredential(credential)
                     .addOnSuccessListener(authResult -> {
                         login();
                     }).addOnFailureListener(e -> {
-                if (e.getMessage()!=null){
-                    Common.CreateDialogAlert(this,e.getMessage());
-                }else
-                {
+                if (e.getMessage() != null) {
+                    Common.CreateDialogAlert(this, e.getMessage());
+                } else {
                     Toast.makeText(this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
                 }
             });
-        }else
-            {
-                login();
-            }
+        } else {
+            login();
+        }
 
     }
 
     private void login() {
 
-        ProgressDialog dialog = Common.createProgressDialog(this,getString(R.string.wait));
+        ProgressDialog dialog = Common.createProgressDialog(this, getString(R.string.wait));
         dialog.setCancelable(false);
         dialog.show();
         Api.getService(Tags.base_url)
-                .login(phone,phone_code)
+                .login(phone, phone_code)
                 .enqueue(new Callback<UserModel>() {
                     @Override
                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                         dialog.dismiss();
-                        if (response.isSuccessful()&&response.body()!=null)
-                        {
-                            preferences.create_update_user_date(VerificationCodeActivity.this,response.body());
+                        if (response.isSuccessful() && response.body() != null) {
+                            preferences.create_update_user_date(VerificationCodeActivity.this, response.body());
                             navigateToSyncActivity();
-                        }else
-                        {
-                            if (response.code()==500)
-                            {
+                        } else {
+                            if (response.code() == 500) {
                                 Toast.makeText(VerificationCodeActivity.this, "Server Error", Toast.LENGTH_SHORT).show();
-                            }else if (response.code()==404)
-                            {
+                            } else if (response.code() == 404) {
                                 navigateToSignUpActivity();
-                            }else
-                            {
-                                Toast.makeText(VerificationCodeActivity.this,getString(R.string.failed), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(VerificationCodeActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -236,9 +222,8 @@ public class VerificationCodeActivity extends AppCompatActivity {
                                     Toast.makeText(VerificationCodeActivity.this, getString(R.string.failed), Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }catch (Exception e)
-                        {
-                            Log.e("Error",e.getMessage()+"__");
+                        } catch (Exception e) {
+                            Log.e("Error", e.getMessage() + "__");
                         }
                     }
                 });
@@ -247,8 +232,8 @@ public class VerificationCodeActivity extends AppCompatActivity {
 
     private void navigateToSignUpActivity() {
         Intent intent = new Intent(this, SignUpActivity.class);
-        intent.putExtra("phone",phone);
-        intent.putExtra("phone_code",phone_code);
+        intent.putExtra("phone", phone);
+        intent.putExtra("phone_code", phone_code);
         startActivity(intent);
         finish();
     }
@@ -263,8 +248,7 @@ public class VerificationCodeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (timer!=null)
-        {
+        if (timer != null) {
             timer.cancel();
         }
     }
